@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "smart-health-react-native",
-    "slug": "smart-health-react-native",
+    "name": "smart-health",
+    "scheme":"smart-health",
+    "slug": "smart-health",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,6 +23,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
