@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';  
+// import CheckBox from '@react-native-community/checkbox';  
+import { CheckBox } from 'react-native-web';
 import { Modalize } from 'react-native-modalize';  
 
-export default function RegisterScreen({ navigation }) {
+export  function RegisterScreen({ navigation }) {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('');

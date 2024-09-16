@@ -6,7 +6,7 @@ const validateCode = (code) => {
   return code.trim().length > 0;
 };
 
-const VerifyAccount = () => {
+export const VerifyAccount = () => {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
 
@@ -71,4 +71,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VerifyAccount;
