@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 
 
-const validateCode = (code) => {
+const ValidateCode = (code) => {
   return code.trim().length > 0;
 };
 
@@ -70,4 +70,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 });
+
+export default ValidateCode
 

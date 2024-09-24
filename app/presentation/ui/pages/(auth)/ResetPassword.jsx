@@ -10,7 +10,7 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 
 
 
-export const ResetPassword = () => {
+const ResetPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
@@ -82,3 +82,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 });
+
+export default ResetPassword

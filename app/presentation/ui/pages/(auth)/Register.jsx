@@ -3,8 +3,13 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 
 // import CheckBox from '@react-native-community/checkbox';  
 import { CheckBox } from 'react-native-web';
 import { Modalize } from 'react-native-modalize';  
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
+import { createUserProfile } from '../../../../data/remote/firebase/firebase-querries';
+import { Link,router } from 'expo-router';
+import * as ROUTES from '../../../utils/constants/routes';
 
-export  function RegisterScreen({ navigation }) {
+const  RegisterScreen =({ navigation }) => {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('');
@@ -42,7 +47,9 @@ export  function RegisterScreen({ navigation }) {
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
-  const handleRegister = () => {
+  const handleRegister =  async(event) => {
+    event.preventDefault()
+    
     if (validateInputs()) {
       // Prepare data for back-end interaction
       const registrationData = {
@@ -52,8 +59,44 @@ export  function RegisterScreen({ navigation }) {
         password,
       };
 
+
       // Back-end interaction (e.g., API call)
       console.log('Registration data:', registrationData);
+
+      try{
+        await createUserWithEmailAndPassword(
+          getAuth(firebaseApp),
+          registrationData.email.toLowerCase(),
+          registrationData.password.toLowerCase()
+        ).then(()=>{
+
+          const userObject ={
+            userID: getAuth(firebaseApp).currentUser.uid,
+            userNames: registrationData.name,
+            userEmail: registrationData.email.toLowerCase(),
+            userPhone: "",
+            userTitle: "",
+            userBirthID:"",
+            userWorkID:"",
+            userRole:0,
+            userHasAccess: false,
+
+          }
+
+          createUserProfile(firebaseApp,userObject)
+
+          //navigate to verify account or sign in
+          router.navigate(ROUTES.SIGN_IN)
+
+        })
+
+        .catch((error)=>{
+          // set Auth error here
+        });
+
+      }catch(error){
+        // Set auth try error
+      }
 
       // Optionally navigate to Sign In after successful registration
       navigation.navigate('SignIn');
@@ -239,3 +282,5 @@ const styles = StyleSheet.create({
     color: '#333',
   },
 });
+
+export default RegisterScreen

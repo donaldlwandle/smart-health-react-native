@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView,ScrollView } from 'react-native';
+import { Link,router } from 'expo-router';
+import * as ROUTES from '../../../utils/constants/routes';
 
-export const SignIn = ({ navigation }) => {
+const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -44,51 +47,60 @@ export const SignIn = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
+    <SafeAreaView style={styles.safeAreaView}>
+      <ScrollView >
 
-      {/* Email Input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+        <View style={styles.container}>
+          <Text style={styles.title}>Sign In</Text>
 
-      {/* Password Input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
-      {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+          {/* Email Input */}
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
-      {/* Reset Password Link */}
-      <View style={styles.resetContainer}>
-        <Text>Forgotten password?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}>
-          <Text style={styles.link}> Reset</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Password Input */}
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+            textContentType='password'
+          />
+          {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
-      {/* Sign In Button */}
-      <View style={styles.buttonContainer}>
-        <Button title="Sign In" onPress={handleSignIn} color="#66cc33" />
-      </View>
+          {/* Reset Password Link */}
+          <View style={styles.resetContainer}>
+            <Text>Forgotten password?</Text>
+            <TouchableOpacity onPress={() => router.navigate(ROUTES.RESET_PASSWORD)}>
+              <Text style={styles.link}> Reset</Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* Sign Up Link */}
-      <View style={styles.signupContainer}>
-        <Text>Don’t have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.link}> Sign Up</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          {/* Sign In Button */}
+          <View style={styles.buttonContainer}>
+            <Button title="Sign In" onPress={handleSignIn} color="#66cc33" />
+          </View>
+
+          {/* Sign Up Link */}
+          <View style={styles.signupContainer}>
+            <Text>Don’t have an account?</Text>
+            <TouchableOpacity onPress={() => router.navigate(ROUTES.REGISTER)}>
+              <Text style={styles.link}> Sign Up</Text>
+            </TouchableOpacity>
+            
+          </View>
+        </View>
+
+      </ScrollView>
+    </SafeAreaView>
+    
   );
 };
 
@@ -97,8 +109,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+    
+
+  },
+
+  safeAreaView:{
+    height:"100%",
     backgroundColor: '#fff',
   },
+
+
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -137,4 +157,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default SignIn
 
