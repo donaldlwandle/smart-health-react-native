@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView,ScrollView } from 'react-native';
 import { Link,router } from 'expo-router';
+import { getFirestore,setDoc,doc } from '@react-native-firebase/firestore';
+import { getAuth,createUserWithEmailAndPassword } from '@react-native-firebase/auth';
+import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
 import * as ROUTES from '../../../utils/constants/routes';
+
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -17,7 +21,8 @@ const SignIn = () => {
   };
 
   // Handle sign-in button press
-  const handleSignIn = () => {
+  const  handleSignIn = async(event) => {
+    event.preventDefault()
     let valid = true;
 
     // Reset error messages
@@ -43,8 +48,56 @@ const SignIn = () => {
     if (valid) {
       // Add sign-in logic here
       console.log('Signing in...');
+      try{
+        await createUserWithEmailAndPassword(
+          getAuth(firebaseApp),
+          email.toLowerCase(),
+          password.toLowerCase()
+        ).then((userCredential)=>{
+
+          const user = userCredential.user;
+
+          const userObject ={
+            userID: user.uid,
+            userNames: "registrationData.name",
+            userEmail: "email",
+            userPhone: "",
+            userTitle: "",
+            userBirthID:"",
+            userWorkID:"",
+            userRole:0,
+            userHasAccess: false,
+
+          }
+
+          
+          setDoc(doc(getFirestore(firebaseApp),"users",user.uid),userObject)
+          .then(()=>{
+            //navigate to verify account or sign in
+            console.log("REACHED STORAGE SECTION")
+            router.navigate(ROUTES.REGISTER)
+            
+
+          })
+          .catch((error)=>{
+            //set Storage execution error
+            console.log("STORAGE ERROR  :  " + error)
+          })
+          
+        })
+        .catch((error)=>{
+          // set Auth error here
+          console.log("ACCOUNT AUTH ERROR  :  " + error)
+        });
+
+      }catch(error){
+        // Set auth try error
+        console.log("REGISTER ERROR  :  " + error)
+      }
     }
   };
+
+  
 
   return (
     <SafeAreaView style={styles.safeAreaView}>

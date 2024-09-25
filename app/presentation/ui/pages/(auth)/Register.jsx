@@ -1,19 +1,21 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, SafeAreaView,Button } from 'react-native';
 // import CheckBox from '@react-native-community/checkbox';  
 import { CheckBox } from 'react-native-web';
 import { Modalize } from 'react-native-modalize';  
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth } from "@react-native-firebase/auth";
 import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
 import { createUserProfile } from '../../../../data/remote/firebase/firebase-querries';
 import { Link,router } from 'expo-router';
+import { collection,addDoc, setDoc,doc,getFirestore} from "@react-native-firebase/app";
 import * as ROUTES from '../../../utils/constants/routes';
 
-const  RegisterScreen =({ navigation }) => {
+
+const  Register =() => {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('donaldlwandle@gmail.com');
+  const [password, setPassword] = useState('dh5488688');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
 
@@ -47,6 +49,8 @@ const  RegisterScreen =({ navigation }) => {
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
+  
+
   const handleRegister =  async(event) => {
     event.preventDefault()
     
@@ -68,12 +72,14 @@ const  RegisterScreen =({ navigation }) => {
           getAuth(firebaseApp),
           registrationData.email.toLowerCase(),
           registrationData.password.toLowerCase()
-        ).then(()=>{
+        ).then((userCredential)=>{
+
+          const user = userCredential.user;
 
           const userObject ={
-            userID: getAuth(firebaseApp).currentUser.uid,
-            userNames: registrationData.name,
-            userEmail: registrationData.email.toLowerCase(),
+            userID: user.uid,
+            userNames: "registrationData.name",
+            userEmail: "registrationData.email.toLowerCase()",
             userPhone: "",
             userTitle: "",
             userBirthID:"",
@@ -83,23 +89,32 @@ const  RegisterScreen =({ navigation }) => {
 
           }
 
-          createUserProfile(firebaseApp,userObject)
+          createUserProfile(firebaseApp,userObject,user.uid)
+          setDoc(doc(getFirestore(firebaseApp),"users",user.uid),userObject)
+          .then(()=>{
+            //navigate to verify account or sign in
+            console.log("REACHED STORAGE SECTION")
+            router.navigate(ROUTES.SIGN_IN)
+            
 
-          //navigate to verify account or sign in
-          router.navigate(ROUTES.SIGN_IN)
-
+          })
+          .catch((error)=>{
+            //set Storage execution error
+            console.log("STORAGE ERROR  :  " + error)
+          })
+          
         })
-
         .catch((error)=>{
           // set Auth error here
+          console.log("ACCOUNT AUTH ERROR  :  " + error)
         });
 
       }catch(error){
         // Set auth try error
+        console.log("REGISTER ERROR  :  " + error)
       }
 
-      // Optionally navigate to Sign In after successful registration
-      navigation.navigate('SignIn');
+      
     }
   };
 
@@ -107,113 +122,150 @@ const  RegisterScreen =({ navigation }) => {
     modalizeRef.current?.open();
   };
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Register</Text>
-      
-      {/* Name input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        placeholderTextColor="#A9A9A9"
-        value={name}
-        onChangeText={setName}
-      />
-      {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
-      
-      {/* Surname input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Surname"
-        placeholderTextColor="#A9A9A9"
-        value={surname}
-        onChangeText={setSurname}
-      />
-      {errors.surname && <Text style={styles.errorText}>{errors.surname}</Text>}
-      
-      {/* Email input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#A9A9A9"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-      
-      {/* Password input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#A9A9A9"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
-      
-      {/* Confirm Password input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        placeholderTextColor="#A9A9A9"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-      />
-      {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
-      
-      {/* Terms and Conditions */}
-      <View style={styles.termsContainer}>
-        <CheckBox
-          value={termsAccepted}
-          onValueChange={setTermsAccepted}
-          style={styles.checkbox}
-        />
-        <TouchableOpacity onPress={openTermsAndConditions}>
-          <Text style={styles.termsText}>Accept Terms and Conditions</Text>
-        </TouchableOpacity>
-      </View>
-      {errors.termsAccepted && <Text style={styles.errorText}>{errors.termsAccepted}</Text>}
-      
-      {/* Register button */}
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
-      
-      <Text style={styles.footerText}>
-        Already have an account?{' '}
-        <Text
-          style={styles.signInText}
-          onPress={() => navigation.navigate('SignIn')}
-        >
-          Sign In
-        </Text>
-      </Text>
 
-      {/* Bottom Sheet for Terms and Conditions */}
-      <Modalize ref={modalizeRef} snapPoint={400}>
-        <ScrollView style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Terms and Conditions</Text>
-          <Text style={styles.modalText}>
-            Here are the terms and conditions you agree to...
+
+  return (
+    <SafeAreaView style={styles.safeAreaView}>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text>
+             Register Page
           </Text>
-          {/* You can add more detailed terms and conditions here */}
-        </ScrollView>
-      </Modalize>
-    </ScrollView>
+
+          {/* Sign In Button */}
+          <View style={styles.buttonContainer}>
+            <Button title="Sign In" onPress={handleRegister} color="#66cc33" />
+          </View>
+        </View>
+      </ScrollView>
+
+    </SafeAreaView>
+    
+    // <ScrollView contentContainerStyle={styles.container}>
+    //   <Text style={styles.title}>Register</Text>
+      
+    //   {/* Name input */}
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Name"
+    //     placeholderTextColor="#A9A9A9"
+    //     value={name}
+    //     onChangeText={setName}
+    //   />
+    //   {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+      
+    //   {/* Surname input */}
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Surname"
+    //     placeholderTextColor="#A9A9A9"
+    //     value={surname}
+    //     onChangeText={setSurname}
+    //   />
+    //   {errors.surname && <Text style={styles.errorText}>{errors.surname}</Text>}
+      
+    //   {/* Email input */}
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Email"
+    //     placeholderTextColor="#A9A9A9"
+    //     value={email}
+    //     onChangeText={setEmail}
+    //     keyboardType="email-address"
+    //   />
+    //   {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+      
+    //   {/* Password input */}
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Password"
+    //     placeholderTextColor="#A9A9A9"
+    //     value={password}
+    //     onChangeText={setPassword}
+    //     secureTextEntry
+    //   />
+    //   {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+      
+    //   {/* Confirm Password input */}
+    //   <TextInput
+    //     style={styles.input}
+    //     placeholder="Confirm Password"
+    //     placeholderTextColor="#A9A9A9"
+    //     value={confirmPassword}
+    //     onChangeText={setConfirmPassword}
+    //     secureTextEntry
+    //   />
+    //   {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
+      
+    //   {/* Terms and Conditions */}
+    //   <View style={styles.termsContainer}>
+    //     <CheckBox
+    //       value={termsAccepted}
+    //       onValueChange={setTermsAccepted}
+    //       style={styles.checkbox}
+    //     />
+    //     <TouchableOpacity onPress={openTermsAndConditions}>
+    //       <Text style={styles.termsText}>Accept Terms and Conditions</Text>
+    //     </TouchableOpacity>
+    //   </View>
+    //   {errors.termsAccepted && <Text style={styles.errorText}>{errors.termsAccepted}</Text>}
+      
+    //   {/* Register button */}
+    //   <TouchableOpacity style={styles.button} onPress={handleRegister}>
+    //     <Text style={styles.buttonText}>Register</Text>
+    //   </TouchableOpacity>
+      
+    //   <Text style={styles.footerText}>
+    //     Already have an account?{' '}
+    //     <Text
+    //       style={styles.signInText}
+    //       onPress={() => navigation.navigate('SignIn')}
+    //     >
+    //       Sign In
+    //     </Text>
+    //   </Text>
+
+    //   {/* Bottom Sheet for Terms and Conditions */}
+    //   <Modalize ref={modalizeRef} snapPoint={400}>
+    //     <ScrollView style={styles.modalContent}>
+    //       <Text style={styles.modalTitle}>Terms and Conditions</Text>
+    //       <Text style={styles.modalText}>
+    //         Here are the terms and conditions you agree to...
+    //       </Text>
+    //       {/* You can add more detailed terms and conditions here */}
+    //     </ScrollView>
+    //   </Modalize>
+    // </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 20,
+  // container: {
+  //   flexGrow: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: '#FFFFFF',
+  //   padding: 20,
+  // },
+  buttonContainer: {
+    marginTop: 16,
+    backgroundColor: '#66cc33',
+    borderRadius: 8,
   },
+
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16,
+    
+
+  },
+
+  safeAreaView:{
+    height:"100%",
+    backgroundColor: '#fff',
+  },
+
   title: {
     fontSize: 24,
     fontWeight: 'bold',

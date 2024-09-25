@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "smart-health",
-    "scheme":"smart-health",
+    "scheme": "smart-health",
     "slug": "smart-health",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,19 +13,34 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.falcon.smartHealth",
+      "googleServicesFile":"./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.falcon.smartHealth",
+      "googleServicesFile":"./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+          "expo-build-properties",
+          {
+          "ios":{
+            "useFrameworks":"static"
+          }
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth"
+
     ]
   }
 }

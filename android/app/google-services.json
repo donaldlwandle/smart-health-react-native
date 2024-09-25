@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "576186942286",
+    "project_id": "smart-health-ae1cb",
+    "storage_bucket": "smart-health-ae1cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576186942286:android:cd1324b139cfb2561c941f",
+        "android_client_info": {
+          "package_name": "com.falcon.smartHealth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576186942286-se181vlo91td2tf1j6j08fsav38ld3er.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.falcon.smartHealth",
+            "certificate_hash": "44fce37539289297792460760a874f7acb93796b"
+          }
+        },
+        {
+          "client_id": "576186942286-qaetbgun13i13u579801dbi8s4cnl68i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADy1hJkPj7gdJVoa5dvchMJpxxwscPxxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576186942286-qaetbgun13i13u579801dbi8s4cnl68i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "576186942286-l8n7922crlfj53e5vj7gl3jujclji6q1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.falcon.smartHealth"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
