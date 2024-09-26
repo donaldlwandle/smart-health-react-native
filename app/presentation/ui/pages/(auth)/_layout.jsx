@@ -14,7 +14,7 @@ const AuthLayout = () => {
         />
 
         <Stack.Screen
-          name='Register'
+          name='RegisterScreen'
           options={{
             headerShown:false
           }}

@@ -11,7 +11,7 @@ import { collection,addDoc, setDoc,doc,getFirestore} from "@react-native-firebas
 import * as ROUTES from '../../../utils/constants/routes';
 
 
-const  Register =() => {
+const  RegisterScreen =() => {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('donaldlwandle@gmail.com');
