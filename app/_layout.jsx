@@ -5,6 +5,7 @@ import SignIn from './presentation/ui/pages/(auth)/SignIn';
 import { useState,useEffect } from 'react';
 
 const RootLayout =() => {
+  
 
   
   const screenOptions = {headerShown : false}

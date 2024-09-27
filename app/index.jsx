@@ -6,25 +6,27 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Profile from './presentation/ui/pages/(tabs)/profile';
 import SignIn from './presentation/ui/pages/(auth)/SignIn';
 import RootLayout from './_layout';
-import auth from '@react-native-firebase/auth';
+import auth, { firebase } from '@react-native-firebase/auth';
+import { firebaseApp } from './data/remote/firebase/firebase-config';
+import { getAuth } from 'firebase/auth';
 
 
 
-
-export default function App() {
+export default function App()  {
 
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-
+  
   // Handle user state changes
   function onAuthStateChanged(user) {
+    
     setUser(user);
     if (initializing) setInitializing(false);
   }
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = getAuth(firebaseApp).onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
 
