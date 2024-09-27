@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity,ActivityIndicator } from 'react-native';
 import { SafeAreaView,ScrollView } from 'react-native';
 import { Link,router } from 'expo-router';
 import { getFirestore,setDoc,doc } from '@react-native-firebase/firestore';
-import { getAuth,createUserWithEmailAndPassword } from '@react-native-firebase/auth';
 import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
 import * as ROUTES from '../../../utils/constants/routes';
-
+import { FirebaseError } from 'firebase/app';
+import { getAuth ,signInWithEmailAndPassword} from 'firebase/auth';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  
+  
 
   // Validation function for email
   const validateEmail = (email) => {
@@ -24,10 +28,12 @@ const SignIn = () => {
   const  handleSignIn = async(event) => {
     event.preventDefault()
     let valid = true;
+    
 
     // Reset error messages
     setEmailError('');
     setPasswordError('');
+    
 
     // Validate email
     if (!email) {
@@ -49,53 +55,80 @@ const SignIn = () => {
       // Add sign-in logic here
       console.log('Signing in...');
       try{
-        await createUserWithEmailAndPassword(
-          getAuth(firebaseApp),
-          email.toLowerCase(),
-          password.toLowerCase()
-        ).then((userCredential)=>{
+        // await createUserWithEmailAndPassword(
+        //   getAuth(firebaseApp),
+        //   email.toLowerCase(),
+        //   password
+        // ).then((userCredential)=>{
 
-          const user = userCredential.user;
+        //   const user = userCredential.user;
 
-          const userObject ={
-            userID: user.uid,
-            userNames: "registrationData.name",
-            userEmail: "email",
-            userPhone: "",
-            userTitle: "",
-            userBirthID:"",
-            userWorkID:"",
-            userRole:0,
-            userHasAccess: false,
+        //   const userObject ={
+        //     userID: user.uid,
+        //     userNames: "registrationData.name",
+        //     userEmail: "email",
+        //     userPhone: "",
+        //     userTitle: "",
+        //     userBirthID:"",
+        //     userWorkID:"",
+        //     userRole:0,
+        //     userHasAccess: false,
 
-          }
+        //   }
 
           
-          setDoc(doc(getFirestore(firebaseApp),"users",user.uid),userObject)
-          .then(()=>{
-            //navigate to verify account or sign in
-            console.log("REACHED STORAGE SECTION")
-            router.navigate(ROUTES.REGISTER)
+        //   setDoc(doc(getFirestore(firebaseApp),"users",user.uid),userObject)
+        //   .then(()=>{
+        //     //navigate to verify account or sign in
+        //     console.log("REACHED STORAGE SECTION")
+        //     router.navigate(ROUTES.REGISTER)
             
 
-          })
-          .catch((error)=>{
-            //set Storage execution error
-            console.log("STORAGE ERROR  :  " + error)
-          })
+        //   })
+        //   .catch((error)=>{
+        //     //set Storage execution error
+        //     console.log("STORAGE ERROR  :  " + error)
+        //   })
           
-        })
-        .catch((error)=>{
-          // set Auth error here
-          console.log("ACCOUNT AUTH ERROR  :  " + error)
-        });
+        // })
+        // .catch((error)=>{
+        //   // set Auth error here
+        //   console.log("ACCOUNT AUTH ERROR  :  " + error)
+        // });
+        setIsLoading(true)
+        await signInWithEmailAndPassword(
+          getAuth(firebaseApp),
+          email.toLowerCase(),
+          password
+        )
+        
+        
 
-      }catch(error){
+      }catch(error ){
         // Set auth try error
+        
+        
         console.log("REGISTER ERROR  :  " + error)
-      }
+      }finally{
+        setIsLoading(false)
+      };
     }
   };
+
+  
+
+  if (isLoading) 
+    return(
+      <View
+        style={{
+          alignItems:'center',
+          justifyContent: "center",
+          flex:1,
+        }}
+      >
+        <ActivityIndicator size="Large"/>
+      </View>
+  ) ;
 
   
 

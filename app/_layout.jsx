@@ -1,14 +1,71 @@
 
-import { StyleSheet, Text, View } from 'react-native';
-import { Slot , Stack} from 'expo-router';
-import SignIn from './presentation/ui/pages/(auth)/SignIn';
+import { ActivityIndicator, View } from 'react-native';
+import { Stack, useRouter, useSegments} from 'expo-router';
 import { useState,useEffect } from 'react';
+import { firebaseApp } from './data/remote/firebase/firebase-config';
+import { getAuth } from 'firebase/auth';
+
+
 
 const RootLayout =() => {
+  const screenOptions = {headerShown : false}
+
+  
+  // Set an initializing state whilst Firebase connects
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+  const router =useRouter();
+  const segments = useSegments();
+
+  
+  
+  // Handle user state changes
+  const onAuthStateChanged =(user) => {
+    console.log("onAuthStateChanged  :  " + user)
+    
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = getAuth(firebaseApp).onAuthStateChanged(onAuthStateChanged);
+    console.log("SUBSCRIBER  :  " + subscriber)
+    return subscriber; // unsubscribe on unmount
+    
+  }, []);
+
+  useEffect(() => {
+    if(initializing) return;
+
+    // const inPrivateGroup = segments[0] === ('/presentation/ui/pages/(tabs)')
+    
+    if(user ){
+       router.replace('/presentation/ui/pages/(tabs)')
+    }else{
+      router.replace('/presentation/ui/pages/(auth)')
+      console.log("ROUTED OUT OF THE PRIVATE SEC")
+    }
+
+
+  }, [user,initializing]);
+
+  if (initializing) 
+    return(
+      <View
+        style={{
+          alignItems:'center',
+          justifyContent: "center",
+          flex:1,
+        }}
+      >
+        <ActivityIndicator size="Large"/>
+      </View>
+  ) ;
+
   
 
   
-  const screenOptions = {headerShown : false}
+  
 
   return (
     <Stack screenOptions={screenOptions}>
@@ -21,11 +78,3 @@ const RootLayout =() => {
 
 export default RootLayout
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
