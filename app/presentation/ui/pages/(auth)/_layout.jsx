@@ -16,11 +16,14 @@ const AuthLayout = () => {
         />
 
         <Stack.Screen
-          name='Register'
+          name='EmailVerification'
           options={{
             headerShown:false
           }}
-        />
+        />    
+
+
+        
 
         <Stack.Screen
           name='ResetPassword'

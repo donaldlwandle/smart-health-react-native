@@ -1,20 +1,45 @@
-import { View, Text, Pressable } from 'react-native'
-import React from 'react'
-import { Button } from 'react-native-web'
-import { getAuth } from 'firebase/auth'
-import { firebaseApp } from '../../../../data/remote/firebase/firebase-config'
-import { TouchableOpacity } from 'react-native'
+import React from 'react';
+import { StyleSheet, View, Image, SafeAreaView, ScrollView } from 'react-native';
+import Users from '../../components/UserManage';
+import { useRouter } from 'expo-router'; 
+import * as ROUTES from '../../../utils/constants/routes';
+import HomeCreate from '../../components/HomeCreate';
 
-const Home = () => {
+ 
+
+export default function Dashboard() {
   return (
-    <View>
-      <Text>Home</Text>
-      <TouchableOpacity onPress={() => getAuth(firebaseApp).signOut()}>
-        <Text > Sign Out</Text>
-      </TouchableOpacity>
-
-    </View>
-  )
+    <SafeAreaView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Image source={require('../../../../../assets/logo.png')} style={styles.logo} />
+          </View>
+          
+          <HomeCreate/>
+        </View>
+        
+      </ScrollView>
+      {/* <Users/> */}
+    </SafeAreaView>
+  );
 }
 
-export default Home
+const styles = StyleSheet.create({
+  scrollView:{
+    backgroundColor: '#FFFFFF',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+  },
+});

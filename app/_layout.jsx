@@ -40,7 +40,13 @@ const RootLayout =() => {
     // const inPrivateGroup = segments[0] === ('/presentation/ui/pages/(tabs)')
     
     if(user ){
-       router.replace('/presentation/ui/pages/(tabs)')
+
+      if(user.emailVerified){
+        router.replace('/presentation/ui/pages/(tabs)')
+      }else{
+        router.replace('/presentation/ui/pages/(auth)/EmailVerification')
+      }
+       
     }else{
       router.replace('/presentation/ui/pages/(auth)')
       console.log("ROUTED OUT OF THE PRIVATE SEC")

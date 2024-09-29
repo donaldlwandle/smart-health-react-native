@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
+import { getAuth ,sendPasswordResetEmail} from 'firebase/auth';
+import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
+import { router } from 'expo-router';
 // Email validation schema using Yup
 // const emailValidationSchema = Yup.object().shape({
 //   email: Yup.string()
@@ -13,39 +15,76 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 const ResetPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [dbError, setDbError] = useState('');
 
 
   // uses state for input validation
-  const isInvalid =  email === '' 
-  || !email.includes("@") || !email.includes(".")  ;
+  const validateEmail = (email) => {
+    // Simple email validation regex
+    const emailRegex = /\S+@\S+\.\S+/;
+    return emailRegex.test(email);
+  };
 
   const handleResetPassword = async () => {
-    try {
 
-      
-      // await emailValidationSchema.validate({ email });
-      // Proceed with the password reset (API call or logic here)
-      Alert.alert('Success', 'A password reset link has been sent to your email');
-    } catch (err) {
-      setError(err.message); // Display validation error
+    let valid = true;
+
+    if (!email) {
+      setError('Email is required');
+      valid = false;
+      return;
     }
+    if (!validateEmail(email)) {
+      setError('Invalid email address');
+      valid = false
+      return;
+    }
+
+    if(valid){
+      
+      try{
+        sendPasswordResetEmail(getAuth(firebaseApp), email)
+        .then(() => {
+          Alert.alert('Success', 'A password reset link has been sent to your email');
+          router.back();
+        })
+      }catch (err) {
+        setDbError(err.message); // Display validation error
+      }
+    }  
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Rest password</Text>
+      <Text style={styles.title}>Reset Password</Text>
+
+      {/* Instructional Text */}
+      <Text style={styles.instructionText}>Put an email you used to create your account.</Text>
+      <Text style={styles.instructionText}>The link to reset your password will be sent to your email.</Text>
+      
+      {/* Display error message from the database */}
+      {dbError ? <Text style={styles.errorText}>{dbError}</Text> : null}
+
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(text) => {
+          setEmail(text);
+          setError('');  // Clear error message when typing
+         
+        }}
         keyboardType="email-address"
         autoCapitalize="none"
       />
+
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <View style={styles.buttonContainer}>
-        <Button title="Reset" onPress={handleResetPassword} disabled={isInvalid} color="#66cc33" />
-      </View>
+
+      
+
+      <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
+        <Text style={styles.buttonText}>Reset</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -60,8 +99,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 24,
+    marginBottom: 12,
     textAlign: 'center',
+  },
+  instructionText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 12,
+    marginTop: 30,
+    opacity: 0.7,
   },
   input: {
     borderWidth: 1,
@@ -76,11 +122,23 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
-  buttonContainer: {
-    marginTop: 16,
-    backgroundColor: '#66cc33',
-    borderRadius: 8,
+  successText: {
+    color: 'green',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+   button: {
+    backgroundColor: '#7BC950',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
   },
 });
+
 
 export default ResetPassword

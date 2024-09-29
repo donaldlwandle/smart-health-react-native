@@ -13,6 +13,8 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [authError, setAuthError] = useState(''); // For authentication errors
+  const [dbError, setDbError] = useState(''); // For database errors
   const [isLoading, setIsLoading] = useState(false);
 
   
@@ -55,46 +57,7 @@ const SignIn = () => {
       // Add sign-in logic here
       console.log('Signing in...');
       try{
-        // await createUserWithEmailAndPassword(
-        //   getAuth(firebaseApp),
-        //   email.toLowerCase(),
-        //   password
-        // ).then((userCredential)=>{
-
-        //   const user = userCredential.user;
-
-        //   const userObject ={
-        //     userID: user.uid,
-        //     userNames: "registrationData.name",
-        //     userEmail: "email",
-        //     userPhone: "",
-        //     userTitle: "",
-        //     userBirthID:"",
-        //     userWorkID:"",
-        //     userRole:0,
-        //     userHasAccess: false,
-
-        //   }
-
-          
-        //   setDoc(doc(getFirestore(firebaseApp),"users",user.uid),userObject)
-        //   .then(()=>{
-        //     //navigate to verify account or sign in
-        //     console.log("REACHED STORAGE SECTION")
-        //     router.navigate(ROUTES.REGISTER)
-            
-
-        //   })
-        //   .catch((error)=>{
-        //     //set Storage execution error
-        //     console.log("STORAGE ERROR  :  " + error)
-        //   })
-          
-        // })
-        // .catch((error)=>{
-        //   // set Auth error here
-        //   console.log("ACCOUNT AUTH ERROR  :  " + error)
-        // });
+        
         setIsLoading(true)
         await signInWithEmailAndPassword(
           getAuth(firebaseApp),
@@ -107,6 +70,7 @@ const SignIn = () => {
       }catch(error ){
         // Set auth try error
         
+        setDbError(error.message)
         
         console.log("REGISTER ERROR  :  " + error)
       }finally{
@@ -134,11 +98,11 @@ const SignIn = () => {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <ScrollView >
-
+      <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.container}>
           <Text style={styles.title}>Sign In</Text>
 
+          {dbError ? <Text style={styles.errorText}>{dbError}</Text> : null}
           {/* Email Input */}
           <TextInput
             style={styles.input}
@@ -161,6 +125,9 @@ const SignIn = () => {
           />
           {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
+          {/* Display database error */}
+          
+
           {/* Reset Password Link */}
           <View style={styles.resetContainer}>
             <Text>Forgotten password?</Text>
@@ -180,31 +147,27 @@ const SignIn = () => {
             <TouchableOpacity onPress={() => router.navigate(ROUTES.REGISTER)}>
               <Text style={styles.link}> Sign Up</Text>
             </TouchableOpacity>
-            
           </View>
         </View>
-
       </ScrollView>
     </SafeAreaView>
-    
   );
 };
 
 const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 16,
-    
-
   },
-
-  safeAreaView:{
-    height:"100%",
-    backgroundColor: '#fff',
-  },
-
-
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -222,6 +185,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 16,
+    textAlign: 'center',
   },
   resetContainer: {
     flexDirection: 'row',
@@ -243,6 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
 
 export default SignIn
 
