@@ -1,90 +1,115 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const ProfileDetails = () => {
+import PersonalDetails from '../pages/(standalone)/PersonalDetails';
+import { router } from 'expo-router';
+const ProfileDetails = ( ) => {
   return (
-    <View style={styles.profileContainer}>
-      {/* Profile Card */}
-      <View style={styles.profileCard}>
-        <Image 
-          source={require('../../../../assets/Picture.png')} 
-          style={styles.profileImage} 
+    <View style={styles.container}>
+     
+      <View style={styles.profileContainer}>
+        <Image
+          source={{ uri: 'https://via.placeholder.com/150' }} // Profile image placeholder
+          style={styles.profileImage}
         />
-        <Text style={styles.profileName}>Intial. Surname</Text>
-        <Text style={styles.profileRole}>Occupation</Text>
+        <Text style={styles.profileName}>Initial. Surname</Text>
+        <Text style={styles.profileOccupation}>Occupation</Text>
       </View>
 
-      {/* Account Details */}
-      <View style={styles.accountDetails}>
-        <AccountItem title="Personal details" icon="person-outline" />
-        <AccountItem title="Passwords and security" icon="shield-outline" />
-      </View>
+      {/* Account Details Section */}
+      <Text style={styles.sectionTitle}>Account Details</Text>
+
+     
+      <TouchableOpacity
+        style={styles.accountItem}
+        onPress={() => {
+          // Navigate to Personal Details Screen
+          router.push('/presentation/ui/pages/(standalone)/PersonalDetails')
+        }}
+      >
+        <View style={styles.itemContent}>
+          <Icon name="person-outline" size={24} color="black" />
+          <Text style={styles.itemText}>Personal details</Text>
+        </View>
+        <Icon name="chevron-right" size={24} color="black" />
+      </TouchableOpacity>
+
+     
+      <TouchableOpacity
+        style={styles.accountItem}
+        onPress={() => {
+          // Navigate to Password and Security Screen
+          router.push('/presentation/ui/pages/(standalone)/ChangePassword')
+        }}
+      >
+        <View style={styles.itemContent}>
+          <Icon name="security" size={24} color="black" />
+          <Text style={styles.itemText}>Passwords and security</Text>
+        </View>
+        <Icon name="chevron-right" size={24} color="black" />
+      </TouchableOpacity>
     </View>
   );
 };
 
-const AccountItem = ({ title, icon }) => {
-  return (
-    <TouchableOpacity style={styles.accountItem}>
-      <Icon name={icon} size={24} color="#000" />
-      <Text style={styles.accountText}>{title}</Text>
-      <Icon name="chevron-forward-outline" size={24} color="#000" />
-    </TouchableOpacity>
-  );
-};
-
 const styles = StyleSheet.create({
-  profileContainer: {
-    marginVertical: 20,
-  },
-  profileCard: {
-    alignItems: 'center',
-    marginVertical: 20,
+  container: {
+    flex: 1,
+    backgroundColor: '#FAFAFA',
     padding: 20,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 2,
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
-  },
-  profileName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  profileRole: {
-    fontSize: 18,
-    color: '#A9A9A9',
-  },
-  accountDetails: {
-    marginVertical: 20,
-  },
-  accountItem: {
-    flexDirection: 'row',
+  profileContainer: {
     alignItems: 'center',
-    padding: 15,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
+    marginBottom: 30,
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 20,
+    elevation: 3, // for shadow on Android
+    shadowColor: '#000', // for shadow on iOS
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 1,
   },
-  accountText: {
-    flex: 1,
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+  },
+  profileName: {
     fontSize: 18,
-    color: '#000',
+    fontWeight: 'bold',
+  },
+  profileOccupation: {
+    fontSize: 14,
+    color: '#888',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  accountItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    elevation: 3, // for shadow on Android
+    shadowColor: '#000', // for shadow on iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  itemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  itemText: {
+    fontSize: 16,
     marginLeft: 10,
   },
 });

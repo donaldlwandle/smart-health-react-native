@@ -3,9 +3,13 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'reac
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ROUTES from '../../utils/constants/routes';
 import { router } from 'expo-router';
-import test from '../pages/others/test';
-import CreatePatientFile from '../pages/others/CreatePatientFile';
-const HomeCreate = () => {
+import test from '../pages/(standalone)/test';
+import CreatePatientFile from '../pages/(standalone)/CreatePatientFile';
+
+
+
+
+const HomeCreate = ({handlePress}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [patientData, setPatientData] = useState(null);
 
@@ -48,17 +52,21 @@ const HomeCreate = () => {
 
       {/* Conditional Rendering of Search Result */}
       {patientData ? (
+        
         <View style={styles.resultContainer}>
-          <Image
-            source={{ uri: patientData.image }}
-            style={styles.profileImage}
-          />
-          <Text style={styles.nameText}>{patientData.name} {patientData.surname}</Text>
-          <Text style={styles.idText}>{patientData.id}</Text>
+          <TouchableOpacity style={styles.placeholderBox} onPress={()=>{router.push(ROUTES.PATIENT_MEDICAL_FILE)}}>
+            <Image
+              source={{ uri: patientData.image }}
+              style={styles.profileImage}
+            />
+            <Text style={styles.nameText}>{patientData.name} {patientData.surname}</Text>
+            <Text style={styles.idText}>{patientData.id}</Text>
+          </TouchableOpacity>
+          
         </View>
       ) : (
         <View style={styles.resultContainer}>
-          <TouchableOpacity style={styles.placeholderBox} onPress={()=>{router.push("ROUTES.CREATE_PATIENT")}}>
+          <TouchableOpacity style={styles.placeholderBox} onPress={()=>{router.push(ROUTES.CREATE_PATIENT)}}>
             <Icon name="plus" size={50} color="#aaa" />
             <Text style={styles.placeholderText}>Create new file</Text>
           </TouchableOpacity>

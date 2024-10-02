@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 
-const CreatePatientFile = () => {
+const CreatePatientFile = ({ navigation }) => {
   // Form state variables
   const [idNumber, setIdNumber] = useState('');
   const [names, setNames] = useState('');
   const [surname, setSurname] = useState('');
   const [gender, setGender] = useState('');
+  const [email, setEmail] = useState('');
+  const [dob, setDOB] = useState('');
+  const [address, setAddress] = useState('');
+  const [race, setRace] = useState('');
+  const [language, setLanguage] = useState('');
   const [insuranceName, setInsuranceName] = useState('');
   const [insuranceNumber, setInsuranceNumber] = useState('');
   const [contactInfo, setContactInfo] = useState('');
@@ -35,9 +40,30 @@ const CreatePatientFile = () => {
       validationErrors.gender = "Gender is required.";
     }
 
-    if (!insuranceName.trim()) {
-      validationErrors.insuranceName = " required.";
+     if (!dob.trim()) {
+      validationErrors.dob = "Please choose your date of birth.";
     }
+
+    if  (!email.trim()) {
+      validationErrors.email = "Email address is required.";
+    }
+
+    if  (!email.trim()) {
+      validationErrors.language = "Language is required.";
+    }
+
+     if (!address.trim()) {
+      validationErrors.address = "Your address is required.";
+    }
+
+    if  (!email.trim()) {
+      validationErrors.race = "Race is required.";
+    }
+
+    if  (!insuranceName.trim()) {
+      validationErrors.insuranceName = "Insurance name is required.";
+    }
+
 
     if (!insuranceNumber.trim() || isNaN(insuranceNumber)) {
       validationErrors.insuranceNumber = "Insurance number must be numeric.";
@@ -61,11 +87,6 @@ const CreatePatientFile = () => {
     // Validate the form
     if (!validateForm()) {
       return; // Do not proceed if validation fails
-    }else{
-
-      //Check if the patient doest exist first
-
-      //then proccedw
     }
 
     const newPatient = {
@@ -112,6 +133,14 @@ const CreatePatientFile = () => {
       {errors.surname && <Text style={styles.errorText}>{errors.surname}</Text>}
 
       <TextInput
+        style={[styles.input, errors.dob && { borderColor: 'red' }]}
+        placeholder="Date of Birth"
+        value={gender}
+        onChangeText={setDOB}
+      />
+      {errors.dob && <Text style={styles.errorText}>{errors.dob}</Text>}
+
+      <TextInput
         style={[styles.input, errors.gender && { borderColor: 'red' }]}
         placeholder="Gender"
         value={gender}
@@ -120,11 +149,46 @@ const CreatePatientFile = () => {
       {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, errors.address && { borderColor: 'red' }]}
+        placeholder="Address"
+        value={gender}
+        onChangeText={setAddress}
+      />
+      {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
+      
+      <TextInput
+        style={[styles.input, errors.email && { borderColor: 'red' }]}
+        placeholder="Email"
+        value={gender}
+        onChangeText={setAddress}
+      />
+      {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+
+      <TextInput
+        style={[styles.input, errors.race && { borderColor: 'red' }]}
+        placeholder="Race"
+        value={gender}
+        onChangeText={setRace}
+      />
+      {errors.race && <Text style={styles.errorText}>{errors.race}</Text>}
+
+      <TextInput
+        style={[styles.input, errors.language && { borderColor: 'red' }]}
+        placeholder="Language"
+        value={gender}
+        onChangeText={setLanguage}
+      />
+      {errors.language && <Text style={styles.errorText}>{errors.language}</Text>}
+    
+      
+
+      <TextInput
+        style={[styles.input, errors.insuranceName && { borderColor: 'red' }]}
         placeholder="Insurance name"
         value={insuranceName}
         onChangeText={setInsuranceName}
       />
+      {errors.insuranceName && <Text style={styles.errorText}>{errors.insuranceName}</Text>}
       
       <TextInput
         style={[styles.input, errors.insuranceNumber && { borderColor: 'red' }]}
@@ -137,7 +201,7 @@ const CreatePatientFile = () => {
 
       <TextInput
         style={[styles.input, errors.contactInfo && { borderColor: 'red' }]}
-        placeholder="Contact information"
+        placeholder="Contact number"
         value={contactInfo}
         onChangeText={setContactInfo}
       />
@@ -145,7 +209,7 @@ const CreatePatientFile = () => {
 
       <TextInput
         style={[styles.input, errors.emergencyContact && { borderColor: 'red' }]}
-        placeholder="Emergency contact information"
+        placeholder="Emergency contact number"
         value={emergencyContact}
         onChangeText={setEmergencyContact}
       />
@@ -192,3 +256,5 @@ const styles = StyleSheet.create({
 });
 
 export default CreatePatientFile;
+
+

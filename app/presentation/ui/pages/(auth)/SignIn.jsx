@@ -7,6 +7,7 @@ import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
 import * as ROUTES from '../../../utils/constants/routes';
 import { FirebaseError } from 'firebase/app';
 import { getAuth ,signInWithEmailAndPassword} from 'firebase/auth';
+import { signInUser } from '../../../../data/remote/firebase/firebase-querries';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -29,6 +30,8 @@ const SignIn = () => {
   // Handle sign-in button press
   const  handleSignIn = async(event) => {
     event.preventDefault()
+
+    
     let valid = true;
     
 
@@ -54,25 +57,18 @@ const SignIn = () => {
 
     // If all fields are valid, proceed with sign-in logic
     if (valid) {
-      // Add sign-in logic here
-      console.log('Signing in...');
+      setIsLoading(true)
+      
       try{
         
-        setIsLoading(true)
-        await signInWithEmailAndPassword(
-          getAuth(firebaseApp),
-          email.toLowerCase(),
-          password
-        )
+        await signInUser(email,password);
         
-        
-
+      
       }catch(error ){
         // Set auth try error
-        
+        console.log("SIGN IN USER ERROR< SIGN IN PAGE  :  " + error)
         setDbError(error.message)
-        
-        console.log("REGISTER ERROR  :  " + error)
+         
       }finally{
         setIsLoading(false)
       };

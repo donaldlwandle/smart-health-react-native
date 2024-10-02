@@ -6,6 +6,7 @@ import * as ROUTES from '../../../utils/constants/routes';
 import { getAuth ,createUserWithEmailAndPassword,sendEmailVerification} from 'firebase/auth';
 import { getFirestore,setDoc,doc } from '@react-native-firebase/firestore';
 import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
+import { createNewUserAccount } from '../../../../data/remote/firebase/firebase-querries';
 const ValidateCode = (code) => {
   return code.trim().length > 0;
 };
@@ -115,65 +116,30 @@ export const VerifyAccount = () => {
 
     // If all fields are valid, proceed with sign-up logic
     if (valid) {
-      console.log('Sign-up form submitted:');
-      console.log({ name, surname, email, password, confirmPassword, acceptedTerms });
 
-      // Uncomment this to handle sign-up with Firebase
-      
-      // Back-end interaction (e.g., API call)
-      // const registrationData = {
-      //   name: name,
-      //   surname: surname,
-      //   email: email,
-      //   phone:phone,
-      //   title:title,
-      //   birthID:birthID,
-      //   workID:workID,
-      //   password: password
-      // };
+      setIsLoading(true)
+      const userObject ={
+        userNames: name + " "+ surname,
+        userEmail: email.toLocaleLowerCase(),
+        userPhone: phone,
+        userTitle: title,
+        userBirthID:birthID,
+        userWorkID:workID,
+        userRole:0,
+        userHasAccess: false,
+
+      }
 
       try {
-        setIsLoading(true)
-        await createUserWithEmailAndPassword(
-          getAuth(firebaseApp),
-          email.toLowerCase(),
-          password
-        ).then((userCredential)=>{
-
-          const user = userCredential.user;
-
-          const userObject ={
-            userID: user.uid,
-            userNames: name + " "+ surname,
-            userEmail: email,
-            userPhone: phone,
-            userTitle: title,
-            userBirthID:birthID,
-            userWorkID:workID,
-            userRole:0,
-            userHasAccess: false,
-
-          }
-
-          
-          setDoc(doc(getFirestore(firebaseApp),"users",user.uid),userObject)
-          .then(()=>{
-            sendEmailVerification(user)
-
-          })
-          
-        })
-        // .catch((error)=>{
-        //   // set Auth error here
-          
-        //   console.log("ACCOUNT AUTH ERROR  :  " + error)
-        // });
+        
+        await createNewUserAccount(userObject, password);
 
       } catch (error) {
         // Set auth try error
-        console.log("REGISTER ERROR  :  " + error.message);
+        console.log("REGISTER ERROR, REGISTER PAGE :  " + error.message);
         setDbError("Registration failed: " + error.message );
       }finally{
+        console.log('Sign-up form submitted:');
         setIsLoading(false)
       }
       
