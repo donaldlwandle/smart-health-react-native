@@ -27,6 +27,16 @@ const StandaloneLayout = () => {
             options={screenOptions}
           />
 
+          <Stack.Screen
+            name='Terms'
+            options={screenOptions}
+          />
+
+          <Stack.Screen
+            name='CreateMedicalFile'
+            options={screenOptions}
+          />
+
           
   
           

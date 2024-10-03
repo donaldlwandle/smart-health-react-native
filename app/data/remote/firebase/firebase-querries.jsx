@@ -1,6 +1,6 @@
 import { collection,addDoc, setDoc,doc,getFirestore,query,where,getDocs} from "firebase/firestore";
 import { firebaseApp } from "./firebase-config";
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 
 
 
@@ -22,6 +22,7 @@ export const getCurrentUserData =async(userID)=>{
 
     }catch(error){
         console.log("GET USER DATA ERROR, FIREBASE_QUERY :" + error.message)
+        throw new Error(error)
     };
     
 }
@@ -79,3 +80,75 @@ export const signInUser= async(email,password)=>{
         throw new Error(error);
     }
 } 
+
+// Reset a returning users password from our Google cloud Firebase Authentication
+export const resetUserPassword= async(email)=>{
+    try {
+        await sendPasswordResetEmail(getAuth(firebaseApp), email)
+        
+    } catch (error) {
+        console.log("RESET PASSWORD ERROR, FIREBASE_QUERY :" + error.message);
+        throw new Error(error);
+    }
+} 
+
+// get all users  from our Google cloud Firebase Firestore
+export const getAllUsers= async()=>{
+    try {
+        const q = query(collection(getFirestore(firebaseApp), "users"));
+        const querySnapshot = await getDocs(q);
+
+        const usersData = await querySnapshot.docs.map(doc=>({
+            id:doc.id,
+            ...doc.data()
+
+        }));
+
+        return usersData;
+        
+    } catch (error) {
+        console.log("GET ALL USERS, FIREBASE_QUERY :" + error.message);
+        throw new Error(error);
+    }
+}
+
+
+// get all patients  from our Google cloud Firebase Firestore
+export const getAllPatientsFiles= async()=>{
+    try {
+        const q = query(collection(getFirestore(firebaseApp), "patients"));
+        const querySnapshot = await getDocs(q);
+
+        const patientsData = await querySnapshot.docs.map(doc=>({
+            id:doc.id,
+            ...doc.data()
+
+        }));
+
+        return patientsData;
+        
+    } catch (error) {
+        console.log("GET ALL PATIENTS, FIREBASE_QUERY :" + error.message);
+        throw new Error(error);
+    }
+}
+
+// get all patients Medical records  from our Google cloud Firebase Firestore
+export const getAllMedicalRecords= async()=>{
+    try {
+        const q = query(collection(getFirestore(firebaseApp), "patients"));
+        const querySnapshot = await getDocs(q);
+
+        const patientsData = await querySnapshot.docs.map(doc=>({
+            id:doc.id,
+            ...doc.data()
+
+        }));
+
+        return patientsData;
+        
+    } catch (error) {
+        console.log("GET ALL PATIENTS, FIREBASE_QUERY :" + error.message);
+        throw new Error(error);
+    }
+}

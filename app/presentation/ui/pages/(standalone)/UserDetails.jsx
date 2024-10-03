@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Text, TextInput, StyleSheet, TouchableOpacity, Image, Picker } from 'react-native';
+import { View, ScrollView, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as ROUTES from '../../../utils/constants/routes';
+import { router } from 'expo-router';
 
 const UserDetails = () => {
   const [isEditable, setIsEditable] = useState(false);
@@ -19,7 +22,9 @@ const UserDetails = () => {
       {/* Header */}
       <View style={styles.headerContainer}>
         {/* Back Icon */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>{
+          router.back()
+        }}>
           <Icon name="arrow-back" size={24} color="black" style={styles.backIcon} />
         </TouchableOpacity>
 

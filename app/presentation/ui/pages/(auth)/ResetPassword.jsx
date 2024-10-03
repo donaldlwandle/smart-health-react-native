@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, SafeAreaView, Alert, ActivityIndicator } from 'react-native';
 import { getAuth ,sendPasswordResetEmail} from 'firebase/auth';
 import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
 import { router } from 'expo-router';
-// Email validation schema using Yup
-// const emailValidationSchema = Yup.object().shape({
-//   email: Yup.string()
-//     .email('Invalid email address')
-//     .required('Email is required'),
-// });
+import { resetUserPassword } from '../../../../data/remote/firebase/firebase-querries';
+
 
 
 
@@ -16,6 +12,7 @@ const ResetPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [dbError, setDbError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
 
   // uses state for input validation
@@ -41,18 +38,39 @@ const ResetPassword = () => {
     }
 
     if(valid){
-      
+      setIsLoading(true)
       try{
-        sendPasswordResetEmail(getAuth(firebaseApp), email)
+        await resetUserPassword(email)
         .then(() => {
           Alert.alert('Success', 'A password reset link has been sent to your email');
           router.back();
         })
+
       }catch (err) {
         setDbError(err.message); // Display validation error
+        console.log("RESET PASSWORD ERROR, RESET PWORD PAGE :" + error.message);
+
+      }finally{
+        
+        setIsLoading(false)
       }
+      
+      
     }  
   };
+
+  if (isLoading) 
+    return(
+      <View
+        style={{
+          alignItems:'center',
+          justifyContent: "center",
+          flex:1,
+        }}
+      >
+        <ActivityIndicator size="Large"/>
+      </View>
+  ) ;
 
   return (
     <View style={styles.container}>

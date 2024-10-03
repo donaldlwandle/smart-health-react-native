@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Image, SafeAreaView, ScrollView, TextInput, FlatList, Text,TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Image, SafeAreaView, ScrollView, TextInput, FlatList, Text,TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import Users from '../../components/UserManage';
-import { useRouter } from 'expo-router'; 
+import { router, useRouter } from 'expo-router'; 
 import * as ROUTES from '../../../utils/constants/routes';
 import HomeCreate from '../../components/HomeCreate';
 import CreatePatientFile from '../(standalone)/CreatePatientFile';
@@ -9,6 +9,10 @@ import CreatePatientFile from '../(standalone)/CreatePatientFile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import { getAllUsers } from '../../../../data/remote/firebase/firebase-querries';
+import useFirebase from '../../../../domain/libs/fetchDataHook/useFirebase';
+import { getUserRole } from '../../../utils/functions/functions';
+
  
 const usersData = [
   { id: '1', name: 'R. Wayne', role: 'Nurse', image: require('../../../../../assets/Picture.png') },
@@ -16,31 +20,44 @@ const usersData = [
   // ... Will add more users here
 ];
 export default function Dashboard() {
+  const {data: users, isLoading,setData:setUsers} = useFirebase(getAllUsers)
+  console.log("USERS DATA, HOME/DASHBOARD :" + users);
+  
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState(usersData);
+  const [filteredUsers, setFilteredUsers] = useState([users]);
   const{initializing,userData} = useGlobalContext();
+
+  
+
+
+  
 
   
 
   const handleSearch = (text) => {
     setSearchQuery(text);
-    const filtered = usersData.filter(user =>
-      user.name.toLowerCase().includes(text.toLowerCase()) ||
-      user.role.toLowerCase().includes(text.toLowerCase())
+    const filtered = users.filter(user =>
+      user.userNames.toLowerCase().includes(text.toLowerCase()) 
     );
     setFilteredUsers(filtered);
   };
 
+  const handlePressItem =(item) =>{
+    router.push(ROUTES.USER_DETAILS)
+  }
+
   const renderUserItem = ({ item }) => (
-    <View style={styles.userCard}>
-      <Image source={item.image} style={styles.userImage} />
-      <Text style={styles.userName}>{item.name}</Text>
-      <Text style={styles.userRole}>{item.role}</Text>
+    <TouchableOpacity style={styles.userCard} onPress={()=>{
+      handlePressItem(item)
+    }}>
+      <Image source={require('../../../../../assets/Picture.png')} style={styles.userImage} />
+      <Text style={styles.userName}>{item.userNames}</Text>
+      <Text style={styles.userRole}>{getUserRole(item.userRole)}</Text>
       <TouchableOpacity style={styles.moreOptions}>
         <Icon name="ellipsis-vertical" size={20} color="#000" />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   const listHeader = () => (
@@ -62,15 +79,28 @@ export default function Dashboard() {
     </View>
   );
 
+  if (isLoading) 
+    return(
+      <View
+        style={{
+          alignItems:'center',
+          justifyContent: "center",
+          flex:1,
+        }}
+      >
+        <ActivityIndicator size="Large"/>
+      </View>
+  ) ;
+
   if(userData && userData.userRole ==1){
     return (
       <SafeAreaView style={styles.scrollView}>
         
   
         <FlatList
-          data={filteredUsers}
+          data={users}
           renderItem={renderUserItem}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           numColumns={3}
           contentContainerStyle={styles.usersList}
   
@@ -81,24 +111,38 @@ export default function Dashboard() {
     );
 
   }
+
+  if(userData && userData.userRole > 1 ){
+    return (
+      <SafeAreaView style={styles.scrollView}>
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Image source={require('../../../../../assets/logo.png')} style={styles.logo} />
+            </View>
+            {userData.userRole == 3?  <HomeCreate handlePress = {ROUTES.CREATE_PATIENT} /> :<div/> }
+            
+          </View>
+          
+        </ScrollView>
+        {/* <Users/> */}
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.scrollView}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Image source={require('../../../../../assets/logo.png')} style={styles.logo} />
-          </View>
+          <Text>Get access from Admin</Text>
           
-          <HomeCreate handlePress = {ROUTES.CREATE_PATIENT} />
+          
         </View>
         
       </ScrollView>
       {/* <Users/> */}
     </SafeAreaView>
   );
-
-
-
 
 
 

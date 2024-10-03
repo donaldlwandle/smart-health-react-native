@@ -33,6 +33,7 @@ export const VerifyAccount = () => {
   const [birthIDError, setBirthIDError] = useState('');
   const [workIDError, setWorkIDError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [termsError, setTermsError] = useState('');
   const [dbError, setDbError] = useState(''); // State for database/back-end errors
 
   // Validation function for email
@@ -111,6 +112,11 @@ export const VerifyAccount = () => {
       valid = false;
     } else if (password !== confirmPassword) {
       setPasswordError('Passwords do not match.');
+      valid = false;
+    }
+
+    if (!acceptedTerms) {
+      setTermsError('You must accept the terms and conditions to register');
       valid = false;
     }
 
@@ -272,6 +278,7 @@ export const VerifyAccount = () => {
             </TouchableOpacity>
             <Text> to register</Text>
           </View>
+          {termsError ? <Text style={styles.errorText}>{termsError}</Text> : null}
 
           {/* Sign Up Button */}
           <View style={styles.buttonContainer}>

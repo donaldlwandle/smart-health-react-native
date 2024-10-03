@@ -3,8 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'reac
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ROUTES from '../../utils/constants/routes';
 import { router } from 'expo-router';
-import test from '../pages/(standalone)/test';
-import CreatePatientFile from '../pages/(standalone)/CreatePatientFile';
+
 
 
 
