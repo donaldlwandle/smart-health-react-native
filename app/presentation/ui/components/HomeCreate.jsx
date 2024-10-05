@@ -3,14 +3,17 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'reac
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ROUTES from '../../utils/constants/routes';
 import { router } from 'expo-router';
+import { getExistingPatient } from '../../utils/functions/functions';
+import { useGlobalContext } from '../../../../context/GlobalProvider';
 
 
 
 
 
-const HomeCreate = ({handlePress}) => {
+const HomeCreate = ({patients,userData}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [patientData, setPatientData] = useState(null);
+  const{setSelectedItem} = useGlobalContext();
 
   // Mock data to simulate search result
   const mockData = {
@@ -22,12 +25,18 @@ const HomeCreate = ({handlePress}) => {
 
   // Function to handle search by ID
   const handleSearch = () => {
-    if (searchQuery === mockData.id) {
-      setPatientData(mockData);
-    } else {
-      setPatientData(null);
-    }
+    setPatientData(getExistingPatient(patients,searchQuery));
   };
+
+  const handleItemSelect =()=>{
+    setSelectedItem(patientData)
+    if(userData.userRole ===2){
+      router.push(ROUTES.PATIENT_FILE)
+    }else{
+      router.push(ROUTES.PATIENT_DETAILS)
+    }
+
+  }
 
   return (
     <View style={styles.container}>
@@ -53,17 +62,20 @@ const HomeCreate = ({handlePress}) => {
       {patientData ? (
         
         <View style={styles.resultContainer}>
-          <TouchableOpacity style={styles.placeholderBox} onPress={()=>{router.push(ROUTES.PATIENT_MEDICAL_FILE)}}>
+          <TouchableOpacity style={styles.placeholderBox} onPress={handleItemSelect}>
             <Image
-              source={{ uri: patientData.image }}
+              source={require('../../../../assets/Picture.png')}
               style={styles.profileImage}
             />
-            <Text style={styles.nameText}>{patientData.name} {patientData.surname}</Text>
-            <Text style={styles.idText}>{patientData.id}</Text>
+            <Text style={styles.nameText}>{patientData.names} {patientData.surname}</Text>
+            <Text style={styles.idText}>{patientData.birthID}</Text>
           </TouchableOpacity>
           
         </View>
       ) : (
+
+        
+
         <View style={styles.resultContainer}>
           <TouchableOpacity style={styles.placeholderBox} onPress={()=>{router.push(ROUTES.CREATE_PATIENT)}}>
             <Icon name="plus" size={50} color="#aaa" />

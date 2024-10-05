@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import { getLastWord, getUserRole } from '../../../utils/functions/functions';
+import { router } from 'expo-router';
 
 const PersonalDetails = () => {
-  const [firstName, setFirstName] = useState('Wayne');
-  const [lastName, setLastName] = useState('Johnson');
-  const [occupation, setOccupation] = useState('Superintendent');
-  const [email, setEmail] = useState('Wade.Warren@icloud.com');
-  const [workId, setWorkId] = useState('223456779');
+
+  const{initializing,userData} = useGlobalContext();
+
+  const [firstName, setFirstName] = useState(userData.userNames);
+  const [lastName, setLastName] = useState(getLastWord(userData.userNames))
+  const [occupation, setOccupation] = useState(getUserRole(userData.userRole));
+  const [email, setEmail] = useState(userData.userEmail);
+  const [workId, setWorkId] = useState(userData.userWorkID);
 
   return (
     <View style={styles.container}>
       {/* Back Icon */}
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>{ router.back()}}>
         <Icon name="arrow-back" size={24} color="black" style={styles.backIcon} />
       </TouchableOpacity>
 

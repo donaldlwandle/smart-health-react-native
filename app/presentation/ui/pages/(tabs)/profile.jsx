@@ -1,13 +1,18 @@
 import React from 'react';
 import { StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import ProfileDetails from '../../components/ProfileDetails';
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
 ;
 
 export default function ProfileScreen() {
+
+  const{initializing,userData} = useGlobalContext();
+
+
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        <ProfileDetails />
+        <ProfileDetails userData={userData} />
       </SafeAreaView>
     </ScrollView>
   );

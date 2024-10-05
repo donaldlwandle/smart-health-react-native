@@ -4,17 +4,21 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import PersonalDetails from '../pages/(standalone)/PersonalDetails';
 import { router } from 'expo-router';
-const ProfileDetails = ( ) => {
+import { getUserRole } from '../../utils/functions/functions';
+import * as ROUTES from '../../utils/constants/routes';
+
+
+const ProfileDetails = ( {userData}) => {
   return (
     <View style={styles.container}>
      
       <View style={styles.profileContainer}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/150' }} // Profile image placeholder
+          source={require('../../../../assets/Picture.png')} // Profile image placeholder
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>Initial. Surname</Text>
-        <Text style={styles.profileOccupation}>Occupation</Text>
+        <Text style={styles.profileName}>{userData.userTitle+" "+ userData.userNames}</Text>
+        <Text style={styles.profileOccupation}>{getUserRole(userData.userRole)}</Text>
       </View>
 
       {/* Account Details Section */}
@@ -25,7 +29,7 @@ const ProfileDetails = ( ) => {
         style={styles.accountItem}
         onPress={() => {
           // Navigate to Personal Details Screen
-          router.push('/presentation/ui/pages/(standalone)/PersonalDetails')
+          router.push(ROUTES.USER_PROFILE_PERSONAL_DETAILS)
         }}
       >
         <View style={styles.itemContent}>

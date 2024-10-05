@@ -13,6 +13,8 @@ const GlobalProvider =({children})=>{
     // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [patients, setPatients] = useState(null);
   const [userData, setUserData] = useState(null);
   const router =useRouter();
   
@@ -78,7 +80,11 @@ const GlobalProvider =({children})=>{
                 setUser,
                 userData,
                 setUserData,
-                initializing
+                initializing,
+                selectedItem,
+                setSelectedItem,
+                patients,
+                setPatients
             }}
         >
             {children}

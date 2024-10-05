@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Image, SafeAreaView, ScrollView, TextInput, FlatList, Text,TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import Users from '../../components/UserManage';
-import { router, useRouter } from 'expo-router'; 
+import { Redirect, router, useRouter } from 'expo-router'; 
 import * as ROUTES from '../../../utils/constants/routes';
 import HomeCreate from '../../components/HomeCreate';
 import CreatePatientFile from '../(standalone)/CreatePatientFile';
@@ -9,24 +9,31 @@ import CreatePatientFile from '../(standalone)/CreatePatientFile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useGlobalContext } from '../../../../../context/GlobalProvider';
-import { getAllUsers } from '../../../../data/remote/firebase/firebase-querries';
+import { getAllPatientsFiles, getAllUsers } from '../../../../data/remote/firebase/firebase-querries';
 import useFirebase from '../../../../domain/libs/fetchDataHook/useFirebase';
 import { getUserRole } from '../../../utils/functions/functions';
 
  
-const usersData = [
-  { id: '1', name: 'R. Wayne', role: 'Nurse', image: require('../../../../../assets/Picture.png') },
-  { id: '2', name: 'W. Warren', role: 'Nurse', image: require('../../../../../assets/Warren.png') },
-  // ... Will add more users here
-];
+
 export default function Dashboard() {
   const {data: users, isLoading,setData:setUsers} = useFirebase(getAllUsers)
+  const {data: patientsData} = useFirebase(getAllPatientsFiles)
   console.log("USERS DATA, HOME/DASHBOARD :" + users);
+  console.log("PATIENTS DATA, HOME/DASHBOARD :" + patientsData);
   
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([users]);
-  const{initializing,userData} = useGlobalContext();
+  const{initializing,userData,setSelectedItem,setPatients} = useGlobalContext();
+
+  // useEffect(() => {
+  //   if(patientsData){
+  //     setPatients(patientsData);
+  //   }
+  // }, []);
+  // set all loaded patients to global context
+  
+  
 
   
 
@@ -44,7 +51,14 @@ export default function Dashboard() {
   };
 
   const handlePressItem =(item) =>{
-    router.push(ROUTES.USER_DETAILS)
+    if(userData.userRole ==1){
+
+      setSelectedItem(item)
+      router.push(ROUTES.USER_DETAILS)
+    }else{
+      router.push(ROUTES.PATIENT_FILE)
+    }
+    
   }
 
   const renderUserItem = ({ item }) => (
@@ -74,8 +88,7 @@ export default function Dashboard() {
         onChangeText={handleSearch}
 
       />
-      
-      
+
     </View>
   );
 
@@ -112,7 +125,7 @@ export default function Dashboard() {
 
   }
 
-  if(userData && userData.userRole > 1 ){
+  if(userData && userData.userRole >1 ){
     return (
       <SafeAreaView style={styles.scrollView}>
         <ScrollView style={styles.scrollView}>
@@ -120,7 +133,8 @@ export default function Dashboard() {
             <View style={styles.header}>
               <Image source={require('../../../../../assets/logo.png')} style={styles.logo} />
             </View>
-            {userData.userRole == 3?  <HomeCreate handlePress = {ROUTES.CREATE_PATIENT} /> :<div/> }
+            <HomeCreate patients={patientsData} userData={userData} />
+            
             
           </View>
           
@@ -131,17 +145,7 @@ export default function Dashboard() {
   }
 
   return (
-    <SafeAreaView style={styles.scrollView}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-          <Text>Get access from Admin</Text>
-          
-          
-        </View>
-        
-      </ScrollView>
-      {/* <Users/> */}
-    </SafeAreaView>
+    <Redirect href={ROUTES.WAITING_PAGE}/>
   );
 
 

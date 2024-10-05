@@ -1,20 +1,106 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, ScrollView, Text, TextInput, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as ROUTES from '../../../utils/constants/routes';
 import { router } from 'expo-router';
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import { getAccessState, getUserRole } from '../../../utils/functions/functions';
+import { setUserAccessPermission, updateUserSystemAccess } from '../../../../data/remote/firebase/firebase-querries';
 
 const UserDetails = () => {
+
+  const{selectedItem} = useGlobalContext();
+
   const [isEditable, setIsEditable] = useState(false);
-  const [email] = useState('Wade.Warren@icloud.com');
-  const [workId] = useState('11006356889');
+  const [email] = useState(selectedItem.userEmail);
+  const [workId] = useState(selectedItem.userWorkID);
   const [permissions, setPermissions] = useState('Access to patient medical files');
 
+  console.log("PERMISSION SELECTED, USER_DETAILS : "+permissions)
   // Toggle Edit/Save 
   const toggleEditMode = () => {
     setIsEditable(!isEditable);
+
+    if(isEditable){
+      Alert.alert(
+        "Save",
+        "You are about to change "+selectedItem.userNames
+         +"\'s permissions to : *"+ getUserRole(permissions)+"* , continue?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel"
+          },
+          {
+            text: "Update",
+            style: "destructive",
+            onPress: () => {
+              // update permissions on firebase
+              saveUserPermissions()
+              
+            }
+          }
+        ]
+      );
+    }
   };
+
+  const saveUserPermissions = async()=>{
+    try {
+      await setUserAccessPermission(selectedItem.userID,permissions)
+      .then(()=>{
+        Alert.alert("Success: Permissions changed")
+      })
+      
+    } catch (error) {
+      Alert.alert("FAILED! : " + error.message +"  Try again!")
+    }finally{
+      router.back()
+    }
+  }
+
+  const toggleAccessState = () => {
+    Alert.alert(
+      "Save",
+      "You are about to "+ getAccessState(selectedItem.userHasAccess)+" to "+selectedItem.userNames +" , continue?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Update",
+          style: "destructive",
+          onPress: () => {
+            // update access on firebase
+            updateSystemAccess()
+            
+          }
+        }
+      ]
+    );
+  };
+
+  const updateSystemAccess = async()=>{
+    try {
+      await updateUserSystemAccess(selectedItem.userID,!selectedItem.userHasAccess)
+      .then(()=>{
+        if(selectedItem.userHasAccess){
+          Alert.alert("Success: Access revoked")
+        }else{
+          Alert.alert("Success: Access granted")
+        }
+        
+      })
+      
+    } catch (error) {
+      Alert.alert("FAILED! : " + error.message +"  Try again!")
+    }finally{
+      router.back()
+    }
+
+  }
 
   return (
     <ScrollView>
@@ -41,8 +127,8 @@ const UserDetails = () => {
           source={{ uri: 'https://via.placeholder.com/100' }} // Replace with actual image URL or local asset
           style={styles.profileImage}
         />
-        <Text style={styles.userName}>W. Warren</Text>
-        <Text style={styles.userRole}>Nurse</Text>
+        <Text style={styles.userName}>{selectedItem.userNames}</Text>
+        <Text style={styles.userRole}>{getUserRole(selectedItem.userRole)}</Text>
       </View>
 
       {/* Email Field (Non-editable) */}
@@ -70,18 +156,26 @@ const UserDetails = () => {
           enabled={isEditable} // Only enable dropdown when in Edit mode
           onValueChange={(itemValue) => setPermissions(itemValue)}
         >
-          <Picker.Item label="None" value="None" />
-          <Picker.Item label="Access to patient files" value="Access to patient files" />
-          <Picker.Item label="Access to patient medical files" value="Access to patient medical files" />
+          <Picker.Item label="None" value={0} />
+          <Picker.Item label="Access to patient files" value={3} />
+          <Picker.Item label="Access to patient medical files" value={2} />
         </Picker>
         {/* Dropdown Icon */}
         {isEditable && <Icon name="arrow-drop-down" size={24} color="gray" style={styles.dropdownIcon} />}
       </View>
 
       {/* Block User Button */}
-      <TouchableOpacity style={styles.blockButton}>
-        <Text style={styles.blockButtonText}>Block User</Text>
-      </TouchableOpacity>
+      {selectedItem.userHasAccess? 
+        <TouchableOpacity style={styles.blockButton} onPress={toggleAccessState}>
+          <Text style={styles.blockButtonText}>Block User</Text>
+        </TouchableOpacity> :
+
+        <TouchableOpacity style={styles.accessButton} onPress={toggleAccessState}>
+          <Text style={styles.blockButtonText}>Give user access</Text>
+        </TouchableOpacity>
+
+      }
+      
     </View>
     </ScrollView>
   );
@@ -179,6 +273,12 @@ const styles = StyleSheet.create({
   },
   blockButton: {
     backgroundColor: '#DC3545', // Red color for Block User
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  accessButton: {
+    backgroundColor: '#66cc33', // Red color for Block User
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',

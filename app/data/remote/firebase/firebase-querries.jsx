@@ -1,4 +1,4 @@
-import { collection,addDoc, setDoc,doc,getFirestore,query,where,getDocs} from "firebase/firestore";
+import { collection,addDoc, setDoc,doc,getFirestore,query,where,getDocs, updateDoc} from "firebase/firestore";
 import { firebaseApp } from "./firebase-config";
 import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 
@@ -62,6 +62,19 @@ export const createNewUserAccount= async(userObject, password)=>{
         
     } catch (error) {
         console.log("CREATE NEW USER ACCOUNT ERROR, FIREBASE_QUERY :" + error.message);
+        throw new Error(error);
+    }
+}
+
+
+// Create a patient file data in our Google cloud Firebase Firestore
+export const createNewPatientFile= async(patientObject)=>{
+    try {
+        await setDoc(doc(getFirestore(firebaseApp),"patients",patientObject.birthID),patientObject)
+    
+        
+    } catch (error) {
+        console.log("CREATE PATIENT FILE ERROR, FIREBASE_QUERY :" + error.message);
         throw new Error(error);
     }
 }
@@ -149,6 +162,40 @@ export const getAllMedicalRecords= async()=>{
         
     } catch (error) {
         console.log("GET ALL PATIENTS, FIREBASE_QUERY :" + error.message);
+        throw new Error(error);
+    }
+}
+
+// set user access roles and permissions Google cloud Firebase Firestore
+export const setUserAccessPermission= async(userID, roleID)=>{
+    try {
+
+        const userRef = doc(getFirestore(firebaseApp), "users", userID);
+
+        // Set the "userRole" field of the user to 'roleID'
+        await updateDoc(userRef, {
+        userRole: roleID
+        });
+        
+    } catch (error) {
+        console.log("UPDATE USER ROLES ERROR, FIREBASE_QUERY :" + error.message);
+        throw new Error(error);
+    }
+}
+
+// set user access roles and permissions Google cloud Firebase Firestore
+export const updateUserSystemAccess= async(userID,access)=>{
+    try {
+
+        const userRef = doc(getFirestore(firebaseApp), "users", userID);
+
+        // Set the "userRole" field of the user to 'roleID'
+        await updateDoc(userRef, {
+        userHasAccess: access
+        });
+        
+    } catch (error) {
+        console.log("UPDATE USER ACCESS ERROR, FIREBASE_QUERY :" + error.message);
         throw new Error(error);
     }
 }

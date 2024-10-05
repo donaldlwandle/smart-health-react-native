@@ -1,9 +1,20 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
 
 const PatientMedicalRecords = () => {
-  const [filter, setFilter] = useState('All');
+  const{selectedItem} = useGlobalContext();
+
+  const [filter, setFilter] = useState('Recent');
   const [showPersonalDetails, setShowPersonalDetails] = useState(false);
   const [showMedicalHistory, setShowMedicalHistory] = useState(false);
 
@@ -34,27 +45,25 @@ const PatientMedicalRecords = () => {
     },
   ];
 
-   // Filtering logic
-  const filteredRecords = medicalRecords.filter((record) => {
-    if (filter === 'All') return true; // Show all records
-
-    const recordDate = new Date(record.date);
+  // Filtering logic
+  const getFilteredRecords = () => {
     const currentDate = new Date();
-
-    if (filter === 'Recent') {
-      const recentCutoff = new Date();
-      recentCutoff.setDate(currentDate.getDate() - 7); // Last 7 days
-      return recordDate >= recentCutoff; // Show records from the last week
-    }
-
-    if (filter === 'Oldest') {
-      const oldestCutoff = new Date();
-      oldestCutoff.setDate(currentDate.getDate() - 30); // Older than 30 days
-      return recordDate < oldestCutoff; // Show records older than 30 days
-    }
-
-    return true; // Fallback to show all
-  });
+    return medicalRecords.filter((record) => {
+      const recordDate = new Date(record.date);
+      if (filter === 'Recent') return true; // Show all records
+      //if (filter === 'Recent') {
+      // const recentCutoff = new Date();
+      // recentCutoff.setDate(currentDate.getDate() - 7); // Last 7 days
+      // return recordDate >= recentCutoff; // Show records from the last week
+      // }
+      if (filter === 'Oldest') {
+        const oldestCutoff = new Date();
+        oldestCutoff.setDate(currentDate.getDate() - 30); // Older than 30 days
+        return recordDate < oldestCutoff; // Show records older than 30 days
+      }
+      return true;
+    });
+  };
 
   const toggleDetails = (type) => {
     if (type === 'Personal') {
@@ -68,57 +77,98 @@ const PatientMedicalRecords = () => {
     setFilter(selectedFilter);
   };
 
+  const filteredRecords = getFilteredRecords(); // Get filtered records
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Icon name="arrow-back" size={24} color="#000" />
-      </TouchableOpacity>
-      <Text style={styles.title}>Patient Medical Records</Text>
-
-      {/* White Box with Details */}
-      <View style={styles.detailsBox}>
-        <TouchableOpacity onPress={() => toggleDetails('Personal')} style={styles.detailsItem}>
-          <Text style={styles.detailsText}>Personal Details</Text>
-          <Icon name="chevron-down" size={20} color="#000" />
+      <ScrollView>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}>
+          <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <View style={styles.separator} />
-        <TouchableOpacity onPress={() => toggleDetails('Medical')} style={styles.detailsItem}>
-          <Text style={styles.detailsText}>Medical History</Text>
-          <Icon name="chevron-down" size={20} color="#000" />
-        </TouchableOpacity>
-        {/* Conditionally render details here based on state */}
-        {showPersonalDetails && <Text style={styles.detailsContent}>John Doe, 30 years old...</Text>}
-        {showMedicalHistory && <Text style={styles.detailsContent}>History of Hypertension...</Text>}
-      </View>
+        <Text style={styles.title}>Patient Medical Records</Text>
 
-      {/* Filter Menu */}
-      <View style={styles.filterMenu}>
-        {['All', 'Recent', 'Oldest'].map((item) => (
+        <View style={styles.detailsBox}>
           <TouchableOpacity
-            key={item}
-            style={[styles.filterItem, filter === item && styles.activeFilter]}
-            onPress={() => handleFilterPress(item)}
-          >
-            <Text style={[styles.filterText, filter === item && styles.activeFilterText]}>{item}</Text>
+            onPress={() => toggleDetails('Personal')}
+            style={styles.detailsItem}>
+            <Text style={styles.detailsText}>Personal Details</Text>
+            <Icon name="chevron-down" size={20} color="#000" />
           </TouchableOpacity>
-        ))}
-      </View>
+          <View style={styles.separator} />
+          <TouchableOpacity
+            onPress={() => toggleDetails('Medical')}
+            style={styles.detailsItem}>
+            <Text style={styles.detailsText}>Medical History</Text>
+            <Icon name="chevron-down" size={20} color="#000" />
+          </TouchableOpacity>
+          {/* Conditionally render details here based on state */}
+          {showPersonalDetails && (
+            <View>
+              <Text style={styles.detailsContent}>{"Names : "+selectedItem.names+ " " + selectedItem.surname }</Text>
+              <Text style={styles.detailsContent}>{"Contacts : "+selectedItem.contactNo}</Text>
+              <Text style={styles.detailsContent}>{"Email : "+ selectedItem.email}</Text>
+              <Text style={styles.detailsContent}>{"Emergency contact : "+selectedItem.emergencyContact}</Text>
+              <Text style={styles.detailsContent}>{"Address : "+selectedItem.address}</Text>
+              <Text style={styles.detailsContent}>{"Languages : "+selectedItem.languages}</Text>
+              <Text style={styles.detailsContent}>{"Date of birth : "+selectedItem.dateOfBirth}</Text>
+              <Text style={styles.detailsContent}>{"ID no : "+selectedItem.birthID}</Text>
+              <Text style={styles.detailsContent}>{"Gender : "+selectedItem.gender}</Text>
+              <Text style={styles.detailsContent}>{"Race : "+selectedItem.race}</Text>
+              <Text style={styles.detailsContent}>{"Insurance name : "+selectedItem.insuranceName}</Text>
+              <Text style={styles.detailsContent}>{"Insurance number : "+selectedItem.insuranceNo}</Text>
 
-      {/* Summary of Medical Records */}
-      <ScrollView style={styles.recordsContainer}>
-        {medicalRecords.map((record, index) => (
-          <TouchableOpacity key={index} style={styles.recordItem}>
-            <View style={styles.recordHeader}>
-              <Text style={styles.recordDate}>{record.date}</Text>
-              <Text style={styles.recordPurpose}>{record.purpose}</Text>
             </View>
-            <View style={styles.recordFooter}>
-              <Text style={styles.recordDiagnosis}>{record.diagnosis}</Text>
-              <Text style={styles.recordDoctor}>{record.doctor}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+          )}
+          {showMedicalHistory && (
+            <Text style={styles.detailsContent}>
+              History of Hypertension...
+            </Text>
+          )}
+        </View>
+
+        <View style={styles.filterMenu}>
+          {['Recent', 'Oldest'].map((item) => (
+            <TouchableOpacity
+              key={item}
+              style={[
+                styles.filterItem,
+                filter === item && styles.activeFilter,
+              ]}
+              onPress={() => handleFilterPress(item)}>
+              <Text
+                style={[
+                  styles.filterText,
+                  filter === item && styles.activeFilterText,
+                ]}>
+                {item}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Add Medical Record Section */}
+        <TouchableOpacity style={styles.addRecordContainer}>
+          <Icon name="add-circle" size={25} color="green" /> 
+          <Text style={styles.addRecordText}>Create new record</Text>
+        </TouchableOpacity>
+
+        {/* Summary of Medical Records */}
+        <View style={styles.recordsContainer}>
+          {filteredRecords.map((record, index) => (
+            <TouchableOpacity key={index} style={styles.recordItem}>
+              <View style={styles.recordHeader}>
+                <Text style={styles.recordDate}>{record.date}</Text>
+                <Text style={styles.recordPurpose}>{record.purpose}</Text>
+              </View>
+              <View style={styles.recordFooter}>
+                <Text style={styles.recordDiagnosis}>{record.diagnosis}</Text>
+                <Text style={styles.recordDoctor}>{record.doctor}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -170,7 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
- filterMenu: {
+  filterMenu: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
@@ -194,9 +244,29 @@ const styles = StyleSheet.create({
   activeFilterText: {
     color: '#FFFFFF',
   },
+  addRecordContainer: {
+    width: 358,
+    height: 60,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 1,
+    alignSelf: 'center', // Center the box horizontally
+  },
+  addRecordText: {
+    fontSize: 18,
+    color: '#green',
+    marginTop: 10,
+  },
   recordsContainer: {
-    marginTop: 20,
-    alignSelf: 'center'
+    marginTop: 1,
+    alignSelf: 'center',
   },
   recordItem: {
     backgroundColor: '#FFFFFF',
@@ -219,7 +289,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000',
     fontWeight: '500', // Semi-bold text
-    opacity: 0.5
+    opacity: 0.5,
   },
   recordPurpose: {
     fontSize: 16,

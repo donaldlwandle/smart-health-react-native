@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { createNewPatientFile, getAllPatientsFiles } from '../../../../data/remote/firebase/firebase-querries';
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import { getExistingPatient, patientExists } from '../../../utils/functions/functions';
+import useFirebase from '../../../../domain/libs/fetchDataHook/useFirebase';
+import * as ROUTES from '../../../utils/constants/routes';
+
 
 const CreatePatientFile = ({ navigation }) => {
+
+  
+  const {data: patientsData} = useFirebase(getAllPatientsFiles);
+  console.log("PATIENTS DATA, CREATE PATIENT PAGE :" + patientsData);
+
+  const{setSelectedItem} = useGlobalContext();
+
   // Form state variables
   const [idNumber, setIdNumber] = useState('');
   const [names, setNames] = useState('');
@@ -16,6 +31,8 @@ const CreatePatientFile = ({ navigation }) => {
   const [insuranceNumber, setInsuranceNumber] = useState('');
   const [contactInfo, setContactInfo] = useState('');
   const [emergencyContact, setEmergencyContact] = useState('');
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // Error state variables
   const [errors, setErrors] = useState({});
@@ -83,31 +100,99 @@ const CreatePatientFile = ({ navigation }) => {
   };
 
   // Function to handle form submission
-  const handleCreate = () => {
+  const handleCreate = async() => {
     // Validate the form
     if (!validateForm()) {
       return; // Do not proceed if validation fails
     }
 
+    
+
     const newPatient = {
-      idNumber,
-      names,
-      surname,
-      gender,
-      insuranceName,
-      insuranceNumber,
-      contactInfo,
-      emergencyContact,
+      birthID:idNumber,
+      names:names,
+      surname:surname,
+      gender:gender,
+      insuranceName:insuranceName,
+      insuranceNo:insuranceNumber,
+      contactNo:contactInfo,
+      emergencyContact:emergencyContact,
+      email:email,
+      address:address,
+      dateOfBirth:dob,
+      languages:language,
+      race:race
     };
 
-    console.log("New Patient File Created", newPatient);
+    if(patientsData && patientExists(patientsData,newPatient.birthID)){
 
-    // Navigate back to the dashboard or patient list
-    navigation.goBack();
+      Alert.alert("Patient with the same ID number already exists!")
+      //set selected item to the already existing 
+      setSelectedItem(getExistingPatient(patientsData,newPatient.birthID))
+      // then navigate to patient view file
+      router.push(ROUTES.PATIENT_DETAILS)
+      
+      
+    }else{
+      setIsLoading(true)
+
+      try {
+
+        await createNewPatientFile(newPatient)
+        .then(()=>{
+          console.log("New Patient File Created", newPatient);
+          Alert.alert("Successful! :Patient file created")
+          setSelectedItem(newPatient);
+          router.push(ROUTES.PATIENT_DETAILS)
+          
+        })
+        .catch((error)=>{
+          // Set auth try error
+          Alert.alert("Failed! : "+ error)
+          console.log("CREATE PATIENT FILE ERROR, CREATE PATIENT PAGE  :  " + error.message)
+        })
+        
+      } catch (error) {
+        // Set auth try error
+        console.log("CREATE PATIENT FILE ERROR, CREATE PATIENT PAGE  :  " + error)
+        Alert.alert("Failed! : "+ error)
+        
+      }finally{
+        setIsLoading(false)
+      };
+  
+
+    }
+
+    
+    
+
+    
   };
+
+  if (isLoading) 
+    return(
+      <View
+        style={{
+          alignItems:'center',
+          justifyContent: "center",
+          flex:1,
+        }}
+      >
+        <ActivityIndicator size="Large"/>
+      </View>
+  ) ;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        {/* Backward Arrow */}
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.title}>Create Patient Medical File</Text>
       <TextInput
         style={[styles.input, errors.idNumber && { borderColor: 'red' }]}
         placeholder="Id number"
@@ -135,7 +220,7 @@ const CreatePatientFile = ({ navigation }) => {
       <TextInput
         style={[styles.input, errors.dob && { borderColor: 'red' }]}
         placeholder="Date of Birth"
-        value={gender}
+        value={dob}
         onChangeText={setDOB}
       />
       {errors.dob && <Text style={styles.errorText}>{errors.dob}</Text>}
@@ -151,7 +236,7 @@ const CreatePatientFile = ({ navigation }) => {
       <TextInput
         style={[styles.input, errors.address && { borderColor: 'red' }]}
         placeholder="Address"
-        value={gender}
+        value={address}
         onChangeText={setAddress}
       />
       {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
@@ -159,23 +244,23 @@ const CreatePatientFile = ({ navigation }) => {
       <TextInput
         style={[styles.input, errors.email && { borderColor: 'red' }]}
         placeholder="Email"
-        value={gender}
-        onChangeText={setAddress}
+        value={email}
+        onChangeText={setEmail}
       />
       {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
       <TextInput
         style={[styles.input, errors.race && { borderColor: 'red' }]}
         placeholder="Race"
-        value={gender}
+        value={race}
         onChangeText={setRace}
       />
       {errors.race && <Text style={styles.errorText}>{errors.race}</Text>}
 
       <TextInput
         style={[styles.input, errors.language && { borderColor: 'red' }]}
-        placeholder="Language"
-        value={gender}
+        placeholder="Languages"
+        value={language}
         onChangeText={setLanguage}
       />
       {errors.language && <Text style={styles.errorText}>{errors.language}</Text>}
@@ -228,6 +313,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8',
     flexGrow: 1,
     justifyContent: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
   },
   input: {
     height: 40,
