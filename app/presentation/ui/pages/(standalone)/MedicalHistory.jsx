@@ -9,79 +9,62 @@ const MedicalHistory = () => {
   const [allergies, setAllergies] = useState('');
   const [medication, setMedication] = useState('');
 
-  // State for errors
-  const [errors, setErrors] = useState({});
-
   // Removed speech-to-text related states and logic
 
   // const navigation = useNavigation(); // Uncomment if navigation is used
 
-  // Function to handle form validation
-  const validateForm = () => {
-    const newErrors = {};
-  };
-
   // Handler for form submission
   const handleCreateFile = () => {
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors); // Set validation errors
-    } else {
-      // Clear errors and process the form
-      setErrors({});
-      const Vitals = {
-        purposeOfVisit,
-        doctor,
-        diagnosis,
-      };
-      console.log('New Medical File Created', medicalFile);
-      
-      // Show success alert
-      Alert.alert(
-        'Success',
-        'Patient medical file created successfully!',
-        [
-          {
-            text: 'OK',
-            // Uncomment if navigation is used
-            // onPress: () => navigation.navigate('Dashboard'), // Navigate back to dashboard
-          },
-        ],
-        { cancelable: false }
-      );
-    }
+    // Simulate form submission
+    const medicalFile = {
+      conditions,
+      allergies,
+      medication,
+    };
+
+    console.log('New Medical History Created', medicalFile);
+
+    // Show success alert
+    Alert.alert(
+      'Success',
+      'Patient medical history created successfully!',
+      [
+        {
+          text: 'OK',
+          // Uncomment if navigation is used
+          // onPress: () => navigation.navigate('Dashboard'), // Navigate back to dashboard
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.header}>Medical history</Text>
+        <Text style={styles.header}>Medical History</Text>
 
-        {/* First 3 Inputs with Validation */}
+        {/* Input Fields */}
         <TextInput
           style={styles.smallInput}
           placeholder="Current conditions"
           value={conditions}
-          onChangeText={conditions}
+          onChangeText={setConditions} // Use setConditions to update state
         />
-   
 
         <TextInput
           style={styles.smallInput}
           placeholder="Allergies"
           value={allergies}
-          onChangeText={allergies}
+          onChangeText={setAllergies} // Use setAllergies to update state
         />
-        
 
         <TextInput
           style={styles.smallInput}
           placeholder="Current medication"
           value={medication}
-          onChangeText={medication}
+          onChangeText={setMedication} // Use setMedication to update state
         />
-
-
 
         {/* Create Button */}
         <TouchableOpacity style={styles.createButton} onPress={handleCreateFile}>
@@ -115,11 +98,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
   },
-  errorText: {
-    color: 'red',
-    fontSize: 12,
-    marginBottom: 5,
-  },
   createButton: {
     backgroundColor: 'green',
     padding: 15,
@@ -135,3 +113,4 @@ const styles = StyleSheet.create({
 });
 
 export default MedicalHistory;
+
