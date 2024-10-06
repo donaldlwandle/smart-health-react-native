@@ -72,3 +72,21 @@ export const getAccessState =(access)=>{
   return " *GRANT SYSTEM ACCESS* "
 
 }
+
+export const  mergeObjects =(obj1, obj2)=> {
+  // Create a new object to store the combined properties
+  const combinedObject = {};
+
+  // Copy properties from obj1 to the combined object
+  for (const property in obj1) {
+    combinedObject[property] = obj1[property];
+  }
+
+  // Copy properties from obj2 to the combined object, overwriting any existing properties
+  for (const property in obj2) {
+    combinedObject[property] = obj2[property];
+  }
+
+  // Return the combined object
+  return combinedObject;
+}

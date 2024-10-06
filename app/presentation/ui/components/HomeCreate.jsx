@@ -52,11 +52,16 @@ const HomeCreate = ({patients,userData}) => {
         />
       </View>
 
+      
+
       <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
         <Text style={styles.searchButtonText}>Search</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>Create a patient file</Text>
+      
+      {userData.userRole===3? (
+        <Text style={styles.title}>Create a patient file</Text>
+      ):(<View/>)}
 
       {/* Conditional Rendering of Search Result */}
       {patientData ? (
@@ -74,14 +79,16 @@ const HomeCreate = ({patients,userData}) => {
         </View>
       ) : (
 
-        
+        (userData.userRole ===3)?(
+          <View style={styles.resultContainer}>
+            <TouchableOpacity style={styles.placeholderBox} onPress={()=>{router.push(ROUTES.CREATE_PATIENT)}}>
+              <Icon name="plus" size={50} color="#aaa" />
+              <Text style={styles.placeholderText}>Create new file</Text>
+            </TouchableOpacity>
+          </View>
+        ):(<View/>)
 
-        <View style={styles.resultContainer}>
-          <TouchableOpacity style={styles.placeholderBox} onPress={()=>{router.push(ROUTES.CREATE_PATIENT)}}>
-            <Icon name="plus" size={50} color="#aaa" />
-            <Text style={styles.placeholderText}>Create new file</Text>
-          </TouchableOpacity>
-        </View>
+        
       )}
     </View>
   );

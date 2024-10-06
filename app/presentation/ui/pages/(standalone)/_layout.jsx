@@ -47,14 +47,29 @@ const StandaloneLayout = () => {
             options={screenOptions}
           />
 
+          <Stack.Screen
+            name='Vitals'
+            options={screenOptions}
+          />
+
+          <Stack.Screen
+            name='Treatment'
+            options={screenOptions}
+          />
+
+          
+
+          <Stack.Screen
+            name='MedicalHistory'
+            options={screenOptions}
+          />
+
           
   
           
         </Stack>
       </>
-      // <View>
-      //   <Text>AuthLayout</Text>
-      // </View>
+      
     )
   }
   
