@@ -1,18 +1,20 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Alert } from 'react-native';
-// Removed Icon and Voice imports
-// import { useNavigation } from '@react-navigation/native'; // Uncomment if navigation is used
+import * as ROUTES from '../../../utils/constants/routes';
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import { convertFirebaseTimestampToStringDateTime } from '../../../utils/functions/functions';
+import { getFirestore, Timestamp } from 'firebase/firestore';
+import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
 
 const CreateMedicalFile = () => {
+  const{setSelectedItem,selectedItem} = useGlobalContext();
+
   // State variables for form inputs
   const [purposeOfVisit, setPurposeOfVisit] = useState('');
   const [doctor, setDoctor] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
-  const [clinicalNotes, setClinicalNotes] = useState('');
-  const [medicationRecords, setMedicationRecords] = useState('');
-  const [diagnosticTestsResults, setDiagnosticTestsResults] = useState('');
-  const [vitals, setVitals] = useState('');
-  const [dischargeSummaries, setDischargeSummaries] = useState('');
+
 
   // State for errors
   const [errors, setErrors] = useState({});
@@ -27,16 +29,12 @@ const CreateMedicalFile = () => {
     if (!purposeOfVisit) newErrors.purposeOfVisit = 'Purpose of visit is required';
     if (!doctor) newErrors.doctor = 'Doctor is required';
     if (!diagnosis) newErrors.diagnosis = 'Diagnosis is required';
-    if (!clinicalNotes) newErrors.clinicalNotes = 'Clinical notes are required';
-    if (!medicationRecords) newErrors.medicationRecords = 'Medication records are required';
-    if (!diagnosticTestsResults) newErrors.diagnosticTestsResults = 'Diagnostic test results are required';
-    if (!vitals) newErrors.vitals = 'Vitals are required';
-    if (!dischargeSummaries) newErrors.dischargeSummaries = 'Discharge summaries are required';
+    
     return newErrors;
   };
 
   // Handler for form submission
-  const handleCreateFile = () => {
+  const handleNext = () => {
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors); // Set validation errors
@@ -44,37 +42,38 @@ const CreateMedicalFile = () => {
       // Clear errors and process the form
       setErrors({});
       const medicalFile = {
-        purposeOfVisit,
-        doctor,
-        diagnosis,
-        clinicalNotes,
-        medicationRecords,
-        diagnosticTestsResults,
-        vitals,
-        dischargeSummaries,
+        purposeOfVisit:purposeOfVisit,
+        doctor:doctor,
+        diagnosis:diagnosis,
+        patientID:selectedItem.birthID,
+        timestamp:Timestamp.fromDate(new Date()).toDate().toLocaleString("en-ZA")
+        
       };
       console.log('New Medical File Created', medicalFile);
-      
+
+      setSelectedItem(medicalFile)
+
+      router.push(ROUTES.VITALS)
       // Show success alert
-      Alert.alert(
-        'Success',
-        'Patient medical file created successfully!',
-        [
-          {
-            text: 'OK',
-            // Uncomment if navigation is used
-            // onPress: () => navigation.navigate('Dashboard'), // Navigate back to dashboard
-          },
-        ],
-        { cancelable: false }
-      );
+      // Alert.alert(
+      //   'Success',
+      //   'Patient medical file created successfully!',
+      //   [
+      //     {
+      //       text: 'OK',
+      //       // Uncomment if navigation is used
+      //       // onPress: () => navigation.navigate('Dashboard'), // Navigate back to dashboard
+      //     },
+      //   ],
+      //   { cancelable: false }
+      // );
     }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.header}>Create Patient Medical File</Text>
+        <Text style={styles.header}>Create new patient record</Text>
 
         {/* First 3 Inputs with Validation */}
         <TextInput
@@ -101,50 +100,10 @@ const CreateMedicalFile = () => {
         />
         {errors.diagnosis && <Text style={styles.errorText}>{errors.diagnosis}</Text>}
 
-        {/* Next Inputs without Microphone Icon */}
-        <TextInput
-          style={styles.largeInput}
-          placeholder="Clinical Notes"
-          value={clinicalNotes}
-          onChangeText={setClinicalNotes}
-        />
-        {errors.clinicalNotes && <Text style={styles.errorText}>{errors.clinicalNotes}</Text>}
-
-        <TextInput
-          style={styles.largeInput}
-          placeholder="Medication Records"
-          value={medicationRecords}
-          onChangeText={setMedicationRecords}
-        />
-        {errors.medicationRecords && <Text style={styles.errorText}>{errors.medicationRecords}</Text>}
-
-        <TextInput
-          style={styles.largeInput}
-          placeholder="Diagnostic Tests Results"
-          value={diagnosticTestsResults}
-          onChangeText={setDiagnosticTestsResults}
-        />
-        {errors.diagnosticTestsResults && <Text style={styles.errorText}>{errors.diagnosticTestsResults}</Text>}
-
-        <TextInput
-          style={styles.largeInput}
-          placeholder="Vitals"
-          value={vitals}
-          onChangeText={setVitals}
-        />
-        {errors.vitals && <Text style={styles.errorText}>{errors.vitals}</Text>}
-
-        <TextInput
-          style={styles.largeInput}
-          placeholder="Discharge Summaries"
-          value={dischargeSummaries}
-          onChangeText={setDischargeSummaries}
-        />
-        {errors.dischargeSummaries && <Text style={styles.errorText}>{errors.dischargeSummaries}</Text>}
 
         {/* Create Button */}
-        <TouchableOpacity style={styles.createButton} onPress={handleCreateFile}>
-          <Text style={styles.buttonText}>Create</Text>
+        <TouchableOpacity style={styles.createButton} onPress={handleNext}>
+          <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -174,15 +133,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
   },
-  largeInput: {
-    height: 106,
-    width: 358,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
   errorText: {
     color: 'red',
     fontSize: 12,
@@ -203,6 +153,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreateMedicalFile;
-
-
-

@@ -1,6 +1,7 @@
 import { collection,addDoc, setDoc,doc,getFirestore,query,where,getDocs, updateDoc} from "firebase/firestore";
 import { firebaseApp } from "./firebase-config";
 import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import { removeObjectByPropertyValue } from "../../utils/utils";
 
 
 
@@ -79,6 +80,18 @@ export const createNewPatientFile= async(patientObject)=>{
     }
 }
 
+// Create a patient file data in our Google cloud Firebase Firestore
+export const createNewMedicalRecord= async(recordObject)=>{
+    try {
+        await addDoc(collection(getFirestore(firebaseApp),"records"),recordObject)
+    
+        
+    } catch (error) {
+        console.log("CREATE NEW MEDICAL RECORD ERROR, FIREBASE_QUERY :" + error.message);
+        throw new Error(error);
+    }
+}
+
 // Authenticate a returning users from our Google cloud Firebase Authentication
 export const signInUser= async(email,password)=>{
     try {
@@ -117,7 +130,7 @@ export const getAllUsers= async()=>{
 
         }));
 
-        return usersData;
+        return removeObjectByPropertyValue( usersData);
         
     } catch (error) {
         console.log("GET ALL USERS, FIREBASE_QUERY :" + error.message);
@@ -146,8 +159,8 @@ export const getAllPatientsFiles= async()=>{
     }
 }
 
-// get all patients Medical records  from our Google cloud Firebase Firestore
-export const getAllMedicalRecords= async()=>{
+// get all patients Medical files  from our Google cloud Firebase Firestore
+export const getAllMedicalFiles= async()=>{
     try {
         const q = query(collection(getFirestore(firebaseApp), "patients"));
         const querySnapshot = await getDocs(q);
@@ -164,6 +177,29 @@ export const getAllMedicalRecords= async()=>{
         console.log("GET ALL PATIENTS, FIREBASE_QUERY :" + error.message);
         throw new Error(error);
     }
+}
+
+// Get patient medical records by their birthID from our Google cloud Firebase Firestore
+export const getAllPatientMedicalRecords =async(patientID)=>{
+    try{
+        // const [{firebaseApp}] = UseStateValue();
+
+        const q = query(collection(getFirestore(firebaseApp), "records"), where("patientID", "==", patientID));
+        const querySnapshot = await getDocs(q);
+
+        const [recordsData] = await querySnapshot.docs.map((item)=>({
+            ...item.data(),
+            docId:item.id
+
+        }));
+
+        return recordsData;
+
+    }catch(error){
+        console.log("GET A PATIENT MEDICAL RECORDS ERROR, FIREBASE_QUERY :" + error.message)
+        throw new Error(error)
+    };
+    
 }
 
 // set user access roles and permissions Google cloud Firebase Firestore

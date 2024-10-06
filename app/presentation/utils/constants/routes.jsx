@@ -8,4 +8,7 @@ export const CREATE_MEDICAL_RECORD = '/presentation/ui/pages/(standalone)/Create
 export const USER_PROFILE_PERSONAL_DETAILS = '/presentation/ui/pages/(standalone)/PersonalDetails'
 export const PATIENT_DETAILS = '/presentation/ui/pages/(standalone)/PatientDetails'
 export const WAITING_PAGE = '/presentation/ui/pages/(standalone)/WaitingPage'
+export const VITALS = '/presentation/ui/pages/(standalone)/Vitals'
+export const TREATMENT = '/presentation/ui/pages/(standalone)/Treatment'
+export const HISTORY = '/presentation/ui/pages/(standalone)/MedicalHistory'
 export const TERMS = '/presentation/ui/pages/(standalone)/Terms'

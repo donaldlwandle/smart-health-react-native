@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Alert } from 'react-native';
-// Removed Icon and Voice imports
-// import { useNavigation } from '@react-navigation/native'; // Uncomment if navigation is used
+import * as ROUTES from '../../../utils/constants/routes';
+import { router } from 'expo-router';
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import { mergeObjects } from '../../../utils/functions/functions';
+
+
 
 const Vitals = () => {
+  const{setSelectedItem,selectedItem} = useGlobalContext();
   // State variables for form inputs
   const [temperature, setTemprature] = useState('');
   const [heartrate, setHeartrate] = useState('');
@@ -22,36 +27,40 @@ const Vitals = () => {
     if (!temperature) newErrors.temperature = 'Temperature is required';
     if (!heartrate) newErrors.heartrate = 'heart rate is required';
     if (!resprate) newErrors.resprate = 'Respiration rate is required';
+    return newErrors;
   };
 
   // Handler for form submission
-  const handleCreateFile = () => {
+  const handleNext = () => {
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors); // Set validation errors
     } else {
-      // Clear errors and process the form
+      //Clear errors and process the form
       setErrors({});
-      const Vitals = {
-        purposeOfVisit,
-        doctor,
-        diagnosis,
+      const vitalsData = {
+        temperature:temperature,
+        heartRate:heartrate,
+        respRate:resprate,
       };
-      console.log('New Medical File Created', medicalFile);
+
+      console.log('New Medical File Created', mergeObjects(selectedItem,vitalsData));
+      setSelectedItem(mergeObjects(selectedItem,vitalsData))
+      router.push(ROUTES.TREATMENT)
       
       // Show success alert
-      Alert.alert(
-        'Success',
-        'Patient medical file created successfully!',
-        [
-          {
-            text: 'OK',
-            // Uncomment if navigation is used
-            // onPress: () => navigation.navigate('Dashboard'), // Navigate back to dashboard
-          },
-        ],
-        { cancelable: false }
-      );
+      // Alert.alert(
+      //   'Success',
+      //   'Patient medical file created successfully!',
+      //   [
+      //     {
+      //       text: 'OK',
+      //       // Uncomment if navigation is used
+      //       // onPress: () => navigation.navigate('Dashboard'), // Navigate back to dashboard
+      //     },
+      //   ],
+      //   { cancelable: false }
+      // );
     }
   };
 
@@ -65,7 +74,7 @@ const Vitals = () => {
           style={styles.smallInput}
           placeholder="Temperature"
           value={temperature}
-          onChangeText={temperature}
+          onChangeText={setTemprature}
         />
         {errors.temperature && <Text style={styles.errorText}>{errors.temperature}</Text>}
 
@@ -73,7 +82,7 @@ const Vitals = () => {
           style={styles.smallInput}
           placeholder="Heartrate"
           value={heartrate}
-          onChangeText={heartrate}
+          onChangeText={setHeartrate}
         />
         {errors.heartrate && <Text style={styles.errorText}>{errors.heartrate}</Text>}
 
@@ -81,14 +90,14 @@ const Vitals = () => {
           style={styles.smallInput}
           placeholder="Respiration Rate"
           value={resprate}
-          onChangeText={resprate}
+          onChangeText={setResprate}
         />
         {errors.resprate && <Text style={styles.errorText}>{errors.resprate}</Text>}
 
 
 
         {/* Create Button */}
-        <TouchableOpacity style={styles.createButton} onPress={handleCreateFile}>
+        <TouchableOpacity style={styles.createButton} onPress={handleNext}>
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </ScrollView>

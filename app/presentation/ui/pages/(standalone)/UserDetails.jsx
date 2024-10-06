@@ -15,7 +15,7 @@ const UserDetails = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [email] = useState(selectedItem.userEmail);
   const [workId] = useState(selectedItem.userWorkID);
-  const [permissions, setPermissions] = useState('Access to patient medical files');
+  const [permissions, setPermissions] = useState(selectedItem.userRole);
 
   console.log("PERMISSION SELECTED, USER_DETAILS : "+permissions)
   // Toggle Edit/Save 

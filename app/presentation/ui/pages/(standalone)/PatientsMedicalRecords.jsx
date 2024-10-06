@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import * as ROUTES from '../../../utils/constants/routes';
+
 
 const PatientMedicalRecords = () => {
   const{selectedItem} = useGlobalContext();
@@ -149,7 +151,7 @@ const PatientMedicalRecords = () => {
         </View>
 
         {/* Add Medical Record Section */}
-        <TouchableOpacity style={styles.addRecordContainer}>
+        <TouchableOpacity style={styles.addRecordContainer} onPress={()=>{router.push(ROUTES.CREATE_MEDICAL_RECORD)}}>
           <Icon name="add-circle" size={25} color="green" /> 
           <Text style={styles.addRecordText}>Create new record</Text>
         </TouchableOpacity>
