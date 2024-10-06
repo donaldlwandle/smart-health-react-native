@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Alert } from 'react-native';
-// Removed Icon and Voice imports
-// import { useNavigation } from '@react-navigation/native'; // Uncomment if navigation is used
 
 const Treatment = () => {
   // State variables for form inputs
@@ -11,36 +9,46 @@ const Treatment = () => {
   const [dosage, setDosage] = useState('');
   const [followup, setFollowup] = useState('');
 
-  // Removed speech-to-text related states and logic
+  // State for errors
+  const [errors, setErrors] = useState({});
 
-  // const navigation = useNavigation(); // Uncomment if navigation is used
+  // Validation function
+  const validateForm = () => {
+    const newErrors = {};
+    if (!diagnosis) newErrors.diagnosis = 'Diagnosis is required/or write N/A';
+    if (!prescription) newErrors.prescription = 'Prescription is required/or write N/A';
+    if (!plan) newErrors.plan = 'Plan is required/or write N/A';
+    if (!dosage) newErrors.dosage = 'Dosage instruction is required/or write N/A';
+    if (!followup) newErrors.followup = 'Follow-up date is required/or write N/A';
+    return newErrors;
+  };
 
   // Handler for form submission
   const handleCreateFile = () => {
-    // Simulate form submission
-    const medicalFile = {
-      diagnosis,
-      prescription,
-      plan,
-      dosage,
-      followup,
-    };
-    
-    console.log('New Medical File Created', medicalFile);
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors); // Set validation errors
+    } else {
+      // Clear errors and process the form
+      setErrors({});
+      const medicalFile = {
+        diagnosis,
+        prescription,
+        plan,
+        dosage,
+        followup,
+      };
 
-    // Show success alert
-    Alert.alert(
-      'Success',
-      'Patient Treatment section was created successfully!',
-      [
-        {
-          text: 'OK',
-          // Uncomment if navigation is used
-          // onPress: () => navigation.navigate('Dashboard'), // Navigate back to dashboard
-        },
-      ],
-      { cancelable: false }
-    );
+      console.log('New Medical File Created', medicalFile);
+
+      // Show success alert
+      Alert.alert(
+        'Success',
+        'Patient Treatment section was created successfully!',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      );
+    }
   };
 
   return (
@@ -48,41 +56,46 @@ const Treatment = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.header}>Treatment</Text>
 
-        {/* Input Fields */}
+        {/* Input Fields with validation */}
         <TextInput
-          style={styles.smallInput}
+          style={[styles.smallInput, errors.diagnosis && styles.inputError]}
           placeholder="Diagnosis"
           value={diagnosis}
-          onChangeText={setDiagnosis} // Use setDiagnosis to update state
+          onChangeText={setDiagnosis}
         />
+        {errors.diagnosis && <Text style={styles.errorText}>{errors.diagnosis}</Text>}
 
         <TextInput
-          style={styles.smallInput}
+          style={[styles.smallInput, errors.prescription && styles.inputError]}
           placeholder="Prescription"
           value={prescription}
-          onChangeText={setPresciption} // Use setPresciption to update state
+          onChangeText={setPresciption}
         />
+        {errors.prescription && <Text style={styles.errorText}>{errors.prescription}</Text>}
 
         <TextInput
-          style={styles.smallInput}
+          style={[styles.smallInput, errors.plan && styles.inputError]}
           placeholder="Plan"
           value={plan}
-          onChangeText={setPlan} // Use setPlan to update state
+          onChangeText={setPlan}
         />
+        {errors.plan && <Text style={styles.errorText}>{errors.plan}</Text>}
 
         <TextInput
-          style={styles.smallInput}
+          style={[styles.smallInput, errors.dosage && styles.inputError]}
           placeholder="Dosage Instruction"
           value={dosage}
-          onChangeText={setDosage} // Use setDosage to update state
+          onChangeText={setDosage}
         />
+        {errors.dosage && <Text style={styles.errorText}>{errors.dosage}</Text>}
 
         <TextInput
-          style={styles.smallInput}
+          style={[styles.smallInput, errors.followup && styles.inputError]}
           placeholder="Follow Up date"
           value={followup}
-          onChangeText={setFollowup} // Use setFollowup to update state
+          onChangeText={setFollowup}
         />
+        {errors.followup && <Text style={styles.errorText}>{errors.followup}</Text>}
 
         {/* Create Button */}
         <TouchableOpacity style={styles.createButton} onPress={handleCreateFile}>
@@ -116,6 +129,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
   },
+  inputError: {
+    borderColor: 'red',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginBottom: 10,
+  },
   createButton: {
     backgroundColor: 'green',
     padding: 15,
@@ -131,7 +152,6 @@ const styles = StyleSheet.create({
 });
 
 export default Treatment;
-
 
 
 
