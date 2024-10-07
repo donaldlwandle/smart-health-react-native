@@ -14,8 +14,9 @@ const GlobalProvider =({children})=>{
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [patients, setPatients] = useState(null);
+  const [patients, setPatients] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [ patientsRecords,setPatientsRecords] = useState([])
   const router =useRouter();
   
 
@@ -84,7 +85,9 @@ const GlobalProvider =({children})=>{
                 selectedItem,
                 setSelectedItem,
                 patients,
-                setPatients
+                setPatients,
+                patientsRecords,
+                setPatientsRecords
             }}
         >
             {children}

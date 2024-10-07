@@ -16,21 +16,25 @@ import { getUserRole } from '../../../utils/functions/functions';
  
 
 export default function Dashboard() {
+
+  const{initializing,userData,setSelectedItem,setPatients,patients} = useGlobalContext();
   const {data: users, isLoading,setData:setUsers} = useFirebase(getAllUsers)
   const {data: patientsData} = useFirebase(getAllPatientsFiles)
+
+
+  useEffect(() => {
+    setPatients(patientsData);
+  }, [patientsData]);
+  
   console.log("USERS DATA, HOME/DASHBOARD :" + users);
   console.log("PATIENTS DATA, HOME/DASHBOARD :" + patientsData);
   
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([users]);
-  const{initializing,userData,setSelectedItem,setPatients} = useGlobalContext();
+  
 
-  // useEffect(() => {
-  //   if(patientsData){
-  //     setPatients(patientsData);
-  //   }
-  // }, []);
+  
   // set all loaded patients to global context
   
   
@@ -133,7 +137,7 @@ export default function Dashboard() {
             <View style={styles.header}>
               <Image source={require('../../../../../assets/logo.png')} style={styles.logo} />
             </View>
-            <HomeCreate patients={patientsData} userData={userData} />
+            <HomeCreate patients={patients} userData={userData} />
             
             
           </View>

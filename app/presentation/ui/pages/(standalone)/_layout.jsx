@@ -28,6 +28,11 @@ const StandaloneLayout = () => {
           />
 
           <Stack.Screen
+            name='PatientMedicalRecord'
+            options={screenOptions}
+          />
+
+          <Stack.Screen
             name='Terms'
             options={screenOptions}
           />

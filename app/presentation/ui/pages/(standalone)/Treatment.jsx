@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Alert } from 'react-native';
+import * as ROUTES from '../../../utils/constants/routes';
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import { mergeObjects } from '../../../utils/functions/functions';
+import { router } from 'expo-router';
+
+
 
 const Treatment = () => {
+  const{setSelectedItem,selectedItem} = useGlobalContext();
   // State variables for form inputs
   const [diagnosis, setDiagnosis] = useState('');
   const [prescription, setPresciption] = useState('');
@@ -15,11 +22,11 @@ const Treatment = () => {
   // Validation function
   const validateForm = () => {
     const newErrors = {};
-    if (!diagnosis) newErrors.diagnosis = 'Diagnosis is required/or write N/A';
-    if (!prescription) newErrors.prescription = 'Prescription is required/or write N/A';
-    if (!plan) newErrors.plan = 'Plan is required/or write N/A';
-    if (!dosage) newErrors.dosage = 'Dosage instruction is required/or write N/A';
-    if (!followup) newErrors.followup = 'Follow-up date is required/or write N/A';
+    if (!diagnosis) newErrors.diagnosis = 'Diagnosis is required';
+    if (!prescription) newErrors.prescription = 'Prescription is required';
+    if (!plan) newErrors.plan = 'Plan is required /or write N/A';
+    if (!dosage) newErrors.dosage = 'Dosage instruction is required';
+    if (!followup) newErrors.followup = 'Follow-up date is required /or write N/A';
     return newErrors;
   };
 
@@ -31,23 +38,20 @@ const Treatment = () => {
     } else {
       // Clear errors and process the form
       setErrors({});
-      const medicalFile = {
-        diagnosis,
-        prescription,
-        plan,
-        dosage,
-        followup,
+      const treatmentDetails = {
+        diagnosis:  diagnosis,
+        prescription:prescription,
+        plan:plan,
+        dosage:dosage,
+        followup:followup,
       };
 
-      console.log('New Medical File Created', medicalFile);
+      console.log('New Medical File Created', mergeObjects(selectedItem,treatmentDetails));
+      setSelectedItem(mergeObjects(selectedItem,treatmentDetails))
+      router.push(ROUTES.HISTORY)
 
       // Show success alert
-      Alert.alert(
-        'Success',
-        'Patient Treatment section was created successfully!',
-        [{ text: 'OK' }],
-        { cancelable: false }
-      );
+      
     }
   };
 

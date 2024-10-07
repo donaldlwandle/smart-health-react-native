@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import React, { useState,useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, SafeAreaView, BackHandler } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // For icons including the back arrow
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import { getExistingPatient } from '../../../utils/functions/functions';
+import { router } from 'expo-router';
 
-const PatientMedicalRecord = ({ navigation }) => {
+const PatientMedicalRecord = () => {
+
+  const{selectedItem,setSelectedItem,patients} = useGlobalContext();
   // State for toggling sections
   const [activeSections, setActiveSections] = useState({
     clinicalNotes: false,
@@ -12,6 +17,22 @@ const PatientMedicalRecord = ({ navigation }) => {
     dischargeSummaries: false,
   });
 
+
+  useEffect(() => {
+    const backAction = () => {
+      handleBackToggle();
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  console.log("RECORD, VIEW RECORD : "+ selectedItem)
+
   // Function to toggle section visibility
   const toggleSection = (section) => {
     setActiveSections((prevSections) => ({
@@ -20,12 +41,17 @@ const PatientMedicalRecord = ({ navigation }) => {
     }));
   };
 
+  const handleBackToggle =()=>{
+    setSelectedItem(getExistingPatient(patients, selectedItem.patientID))
+    router.back()
+  }
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <ScrollView>
         <View style={styles.header}>
           {/* Backward Arrow */}
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={()=>{handleBackToggle()}}>
             <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -35,6 +61,28 @@ const PatientMedicalRecord = ({ navigation }) => {
 
           {/* Single Box for All Sections */}
           <View style={styles.sectionBox}>
+            {/* Vital Section */}
+            <TouchableOpacity onPress={() => toggleSection('vital')} style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Vitals</Text>
+              <Ionicons
+                name={activeSections.vital ? 'chevron-up' : 'chevron-down'}
+                size={20}
+                color="black"
+              />
+            </TouchableOpacity>
+            {activeSections.vital && (
+              <View style={styles.sectionContent}>
+                <Text>{"Temperature : "+ selectedItem.temperature}</Text>
+                <Text>{"Heart rate : "+ selectedItem.heartRate}</Text>
+                <Text>{"Respiration rate : "+ selectedItem.respRate}</Text>
+              </View>
+            )}
+
+            <View style={styles.divider} />
+
+
+
+
             {/* Clinical Notes */}
             <TouchableOpacity onPress={() => toggleSection('clinicalNotes')} style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Treatment</Text>
@@ -46,7 +94,12 @@ const PatientMedicalRecord = ({ navigation }) => {
             </TouchableOpacity>
             {activeSections.clinicalNotes && (
               <View style={styles.sectionContent}>
-                <Text>Details about Clinical notes go here...</Text>
+                <Text>{"Diagnosis : "+ selectedItem.diagnosis}</Text>
+                <Text>{"Prescription : "+ selectedItem.prescription}</Text>
+                <Text>{"Treatment plan : "+ selectedItem.plan}</Text>
+                <Text>{"Dosage instructions : "+ selectedItem.dosage}</Text>
+                <Text>{"Date of treatment : "+ selectedItem.timestamp}</Text>
+                <Text>{"Follow-up date : "+ selectedItem.followup}</Text>
               </View>
             )}
 
@@ -63,25 +116,14 @@ const PatientMedicalRecord = ({ navigation }) => {
             </TouchableOpacity>
             {activeSections.medicationRecords && (
               <View style={styles.sectionContent}>
-                <Text>Details about Medication History go here...</Text>
+                <Text>{"Conditions : "+ selectedItem.conditions}</Text>
+                <Text>{"Allergies : "+ selectedItem.allergies}</Text>
+                <Text>{"Medication : "+ selectedItem.medication}</Text>
               </View>
             )}
 
-            <View style={styles.divider} />
-            {/* Vital Section */}
-            <TouchableOpacity onPress={() => toggleSection('vital')} style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Vitals</Text>
-              <Ionicons
-                name={activeSections.vital ? 'chevron-up' : 'chevron-down'}
-                size={20}
-                color="black"
-              />
-            </TouchableOpacity>
-            {activeSections.vital && (
-              <View style={styles.sectionContent}>
-                <Text>Details about Vital go here...</Text>
-              </View>
-            )}
+            
+            
           </View>
         </View>
       </ScrollView>

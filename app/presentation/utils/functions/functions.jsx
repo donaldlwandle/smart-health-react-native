@@ -90,3 +90,12 @@ export const  mergeObjects =(obj1, obj2)=> {
   // Return the combined object
   return combinedObject;
 }
+
+export const getBeforeFirstComma=(str)=> {
+  const index = str.indexOf(",");
+  if (index !== -1) {
+    return str.substring(0, index);
+  } else {
+    return str;
+  }
+}

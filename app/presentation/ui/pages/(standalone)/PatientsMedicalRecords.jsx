@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,14 +7,48 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useGlobalContext } from '../../../../../context/GlobalProvider';
 import * as ROUTES from '../../../utils/constants/routes';
+import useFirebase from '../../../../domain/libs/fetchDataHook/useFirebase';
+import { getAllPatientMedicalRecords, getAllPatientsFiles } from '../../../../data/remote/firebase/firebase-querries';
+import { getBeforeFirstComma } from '../../../utils/functions/functions';
 
 
 const PatientMedicalRecords = () => {
-  const{selectedItem} = useGlobalContext();
+  const{selectedItem,setSelectedItem,patientsRecords,setPatientsRecords} = useGlobalContext();
+  
+  
+  const [isLoading, setIsLoading,] = useState(false);
+
+  useEffect(() => {
+    const  fetchData = async ()=>{
+      setIsLoading(true);
+
+      try {
+        const response = await getAllPatientMedicalRecords(selectedItem.birthID);
+        setPatientsRecords([response]);
+        
+      } catch (error) {
+        console.log("FETCH DATA, PATIENTS_MEDICAL_RECORDS :" + error.message);
+        Alert.alert("Error",error.message)
+        
+        
+      }finally{
+        setIsLoading(false);
+      }
+
+    }
+  
+
+    fetchData();
+    
+    
+    
+  }, [])
+  
 
   const [filter, setFilter] = useState('Recent');
   const [showPersonalDetails, setShowPersonalDetails] = useState(false);
@@ -50,8 +84,8 @@ const PatientMedicalRecords = () => {
   // Filtering logic
   const getFilteredRecords = () => {
     const currentDate = new Date();
-    return medicalRecords.filter((record) => {
-      const recordDate = new Date(record.date);
+    return patientsRecords.filter((record) => {
+      const recordDate = new Date(record.timestamp );
       if (filter === 'Recent') return true; // Show all records
       //if (filter === 'Recent') {
       // const recentCutoff = new Date();
@@ -79,6 +113,14 @@ const PatientMedicalRecords = () => {
     setFilter(selectedFilter);
   };
 
+  const handleItemSelect =(record)=>{
+    console.log("Handle item press executed")
+    setSelectedItem(record)
+    router.push(ROUTES.VIEW_RECORD)
+    
+  }
+
+  
   const filteredRecords = getFilteredRecords(); // Get filtered records
 
   return (
@@ -159,10 +201,12 @@ const PatientMedicalRecords = () => {
         {/* Summary of Medical Records */}
         <View style={styles.recordsContainer}>
           {filteredRecords.map((record, index) => (
-            <TouchableOpacity key={index} style={styles.recordItem}>
+            <TouchableOpacity key={index} style={styles.recordItem} onPress={()=>{
+              handleItemSelect(record)
+            }}>
               <View style={styles.recordHeader}>
-                <Text style={styles.recordDate}>{record.date}</Text>
-                <Text style={styles.recordPurpose}>{record.purpose}</Text>
+                <Text style={styles.recordDate}>{record.timestamp}</Text>
+                <Text style={styles.recordPurpose}>{record.purposeOfVisit}</Text>
               </View>
               <View style={styles.recordFooter}>
                 <Text style={styles.recordDiagnosis}>{record.diagnosis}</Text>

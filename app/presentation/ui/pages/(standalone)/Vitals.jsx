@@ -48,19 +48,7 @@ const Vitals = () => {
       setSelectedItem(mergeObjects(selectedItem,vitalsData))
       router.push(ROUTES.TREATMENT)
       
-      // Show success alert
-      // Alert.alert(
-      //   'Success',
-      //   'Patient medical file created successfully!',
-      //   [
-      //     {
-      //       text: 'OK',
-      //       // Uncomment if navigation is used
-      //       // onPress: () => navigation.navigate('Dashboard'), // Navigate back to dashboard
-      //     },
-      //   ],
-      //   { cancelable: false }
-      // );
+      
     }
   };
 

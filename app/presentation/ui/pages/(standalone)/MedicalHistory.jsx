@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Alert } from 'react-native';
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import * as ROUTES from '../../../utils/constants/routes';
+import { getExistingPatient, mergeObjects } from '../../../utils/functions/functions';
+import { router } from 'expo-router';
+import { createNewMedicalRecord } from '../../../../data/remote/firebase/firebase-querries';
+
 
 const MedicalHistory = () => {
+  
+  const{selectedItem,setSelectedItem,patients,setPatients,setPatientsRecords,patientsRecords} = useGlobalContext();
   // State variables for form inputs
   const [conditions, setConditions] = useState('');
   const [allergies, setAllergies] = useState('');
@@ -20,28 +28,46 @@ const MedicalHistory = () => {
   };
 
   // Handler for form submission
-  const handleCreateFile = () => {
+  const handleCreateFile = async() => {
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors); // Set validation errors
     } else {
       // Clear errors and process the form
       setErrors({});
-      const medicalFile = {
-        conditions,
-        allergies,
-        medication,
+      const historyData = {
+        conditions:conditions,
+        allergies:allergies,
+        medication:medication,
       };
 
-      console.log('New Medical History Created', medicalFile);
+      try {
+        await createNewMedicalRecord(mergeObjects(selectedItem,historyData))
+        .then(()=>{
+          console.log('New Medical History Created', mergeObjects(selectedItem,historyData));
+          patientsRecords.push(mergeObjects(selectedItem,historyData))
+ 
 
-      // Show success alert
-      Alert.alert(
-        'Success',
-        'Patient medical history created successfully!',
-        [{ text: 'OK' }],
-        { cancelable: false }
-      );
+          setPatients(patientsRecords);
+          console.log("UPDATED PATIENTS RECORDS, MEDICAL HUSTORY : "+patientsRecords)
+          
+          setSelectedItem(getExistingPatient(patients, selectedItem.patientID))
+          // Show success alert
+          Alert.alert(
+            'Success',
+            'record created successfully!',
+            [{ text: 'OK' }],
+            { cancelable: false }
+          );
+
+          router.replace(ROUTES.HOME)
+
+        })
+      } catch (error) {
+        console.log("ADD NEW RECORD, MEDICAL HISTORY: " +error.message)
+      }
+
+      
     }
   };
 
@@ -77,7 +103,7 @@ const MedicalHistory = () => {
 
         {/* Create Button */}
         <TouchableOpacity style={styles.createButton} onPress={handleCreateFile}>
-          <Text style={styles.buttonText}>Next</Text>
+          <Text style={styles.buttonText}>Save record</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
