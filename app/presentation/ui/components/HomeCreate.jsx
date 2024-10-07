@@ -6,37 +6,27 @@ import { router } from 'expo-router';
 import { getExistingPatient } from '../../utils/functions/functions';
 import { useGlobalContext } from '../../../../context/GlobalProvider';
 
-
-
-
-
-const HomeCreate = ({patients,userData}) => {
+const HomeCreate = ({ patients, userData }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [patientData, setPatientData] = useState(null);
-  const{setSelectedItem} = useGlobalContext();
-
-  // Mock data to simulate search result
-  const mockData = {
-    id: '123456789',
-    name: 'John Doe',
-    surname: 'Doe',
-    image: 'https://via.placeholder.com/150', // placeholder image
-  };
+  const { setSelectedItem } = useGlobalContext();
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   // Function to handle search by ID
   const handleSearch = () => {
-    setPatientData(getExistingPatient(patients,searchQuery));
+    const foundPatient = getExistingPatient(patients, searchQuery);
+    setPatientData(foundPatient);
+    setSearchPerformed(true); // Mark that search has been performed
   };
 
-  const handleItemSelect =()=>{
-    setSelectedItem(patientData)
-    if(userData.userRole ===2){
-      router.push(ROUTES.PATIENT_FILE)
-    }else{
-      router.push(ROUTES.PATIENT_DETAILS)
+  const handleItemSelect = () => {
+    setSelectedItem(patientData);
+    if (userData.userRole === 2) {
+      router.push(ROUTES.PATIENT_FILE);
+    } else {
+      router.push(ROUTES.PATIENT_DETAILS);
     }
-
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -52,20 +42,25 @@ const HomeCreate = ({patients,userData}) => {
         />
       </View>
 
-      
-
       <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
         <Text style={styles.searchButtonText}>Search</Text>
       </TouchableOpacity>
 
-      
-      {userData.userRole===3? (
+      {/* Conditional rendering based on role and search results */}
+      {userData.userRole === 3 ? (
         <Text style={styles.title}>Create a patient file</Text>
-      ):(<View/>)}
+      ) : (
+        <View />
+      )}
 
-      {/* Conditional Rendering of Search Result */}
+      {/* Display search results or fallback message */}
+      {searchPerformed && !patientData ? (
+        <View>
+          <Text style={styles.noResultsText}>Sorry, no results found</Text>
+        </View>
+      ) : null}
+
       {patientData ? (
-        
         <View style={styles.resultContainer}>
           <TouchableOpacity style={styles.placeholderBox} onPress={handleItemSelect}>
             <Image
@@ -75,20 +70,16 @@ const HomeCreate = ({patients,userData}) => {
             <Text style={styles.nameText}>{patientData.names} {patientData.surname}</Text>
             <Text style={styles.idText}>{patientData.birthID}</Text>
           </TouchableOpacity>
-          
         </View>
       ) : (
-
-        (userData.userRole ===3)?(
+        searchPerformed && userData.userRole === 3 && (
           <View style={styles.resultContainer}>
-            <TouchableOpacity style={styles.placeholderBox} onPress={()=>{router.push(ROUTES.CREATE_PATIENT)}}>
+            <TouchableOpacity style={styles.placeholderBox} onPress={() => { router.push(ROUTES.CREATE_PATIENT); }}>
               <Icon name="plus" size={50} color="#aaa" />
               <Text style={styles.placeholderText}>Create new file</Text>
             </TouchableOpacity>
           </View>
-        ):(<View/>)
-
-        
+        )
       )}
     </View>
   );
@@ -121,7 +112,7 @@ const styles = StyleSheet.create({
     borderColor: 'green',
   },
   searchButton: {
-   backgroundColor: 'green',
+    backgroundColor: 'green',
     padding: 15,
     borderRadius: 5,
     marginTop: 20,
@@ -132,13 +123,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
-    title: {
+  title: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
     alignSelf: 'flex-start',
     marginTop: 30,
-    },
+  },
+  noResultsText: {
+    fontSize: 16,
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
   resultContainer: {
     alignItems: 'center',
     justifyContent: 'center',
