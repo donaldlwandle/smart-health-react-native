@@ -68,6 +68,8 @@ const styles = StyleSheet.create({
   },
   usersList: {
     paddingHorizontal: 10,
+    marginLeft: 10,
+    marginRight:10,
   },
   userCard: {
     flex: 1,

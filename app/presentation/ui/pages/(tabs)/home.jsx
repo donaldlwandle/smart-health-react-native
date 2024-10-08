@@ -170,11 +170,12 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   logo: {
-    width: 50,
-    height: 50,
+    width: 30,
+    height: 30,
   },
 
   searchInput: {
+    marginTop: 1,
     height: 40,
     borderColor: '#D3D3D3',
     borderWidth: 1,
