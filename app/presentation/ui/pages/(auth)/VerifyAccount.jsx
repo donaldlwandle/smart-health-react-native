@@ -7,6 +7,7 @@ import { getAuth ,createUserWithEmailAndPassword,sendEmailVerification} from 'fi
 import { getFirestore,setDoc,doc } from '@react-native-firebase/firestore';
 import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
 import { createNewUserAccount } from '../../../../data/remote/firebase/firebase-querries';
+import { Timestamp } from 'firebase/firestore';
 const ValidateCode = (code) => {
   return code.trim().length > 0;
 };
@@ -133,6 +134,7 @@ export const VerifyAccount = () => {
         userWorkID:workID,
         userRole:0,
         userHasAccess: false,
+        timestamp:Timestamp.fromDate(new Date()).toDate().toLocaleString("en-ZA")
 
       }
 

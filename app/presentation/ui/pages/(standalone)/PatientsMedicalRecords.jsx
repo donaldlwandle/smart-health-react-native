@@ -29,7 +29,19 @@ const PatientMedicalRecords = () => {
 
       try {
         const response = await getAllPatientMedicalRecords(selectedItem.birthID);
-        setPatientsRecords([response]);
+        if(response){
+          setPatientsRecords([response]);
+        }else{
+          setPatientsRecords([{
+            date: '',
+            purpose: '',
+            diagnosis: '',
+            doctor: '',
+            timestamp:'',
+            purposeOfVisit:""
+          }]);
+        }
+        
         
       } catch (error) {
         console.log("FETCH DATA, PATIENTS_MEDICAL_RECORDS :" + error.message);
@@ -78,6 +90,7 @@ const PatientMedicalRecords = () => {
       purpose: 'Routine Check',
       diagnosis: 'Cold',
       doctor: 'Dr. White',
+      
     },
   ];
 
@@ -85,7 +98,7 @@ const PatientMedicalRecords = () => {
   const getFilteredRecords = () => {
     const currentDate = new Date();
     return patientsRecords.filter((record) => {
-      const recordDate = new Date(record.timestamp );
+      const recordDate = new Date(record.timestamp);
       if (filter === 'Recent') return true; // Show all records
       //if (filter === 'Recent') {
       // const recentCutoff = new Date();

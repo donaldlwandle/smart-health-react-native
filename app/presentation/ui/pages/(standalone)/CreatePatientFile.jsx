@@ -7,6 +7,7 @@ import { useGlobalContext } from '../../../../../context/GlobalProvider';
 import { getExistingPatient, patientExists } from '../../../utils/functions/functions';
 import useFirebase from '../../../../domain/libs/fetchDataHook/useFirebase';
 import * as ROUTES from '../../../utils/constants/routes';
+import { Timestamp } from 'firebase/firestore';
 
 
 const CreatePatientFile = ({ navigation }) => {
@@ -121,7 +122,8 @@ const CreatePatientFile = ({ navigation }) => {
       address:address,
       dateOfBirth:dob,
       languages:language,
-      race:race
+      race:race,
+      timestamp:Timestamp.fromDate(new Date()).toDate().toLocaleString("en-ZA")
     };
 
     if(patientsData && patientExists(patientsData,newPatient.birthID)){
