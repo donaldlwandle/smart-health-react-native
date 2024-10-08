@@ -42,8 +42,15 @@ const CreatePatientFile = ({ navigation }) => {
   const validateForm = () => {
     let validationErrors = {};
 
-    if (!idNumber.trim()) {
+    if (!idNumber) {
       validationErrors.idNumber = "ID number is required.";
+      valid = false;
+    } else if (!isNumeric(idNumber)) {
+      validationErrors.idNumber = "Please enter a valid ID.";
+      valid = false;
+    } else if (idNumber.length !== 13) {
+      validationErrors.idNumber = "Please enter a valid ID.";
+      valid = false;
     }
 
     if (!names.trim()) {

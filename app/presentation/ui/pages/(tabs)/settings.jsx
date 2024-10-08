@@ -33,7 +33,7 @@ export default function SettingsScreen({ navigation }) {
         {/* About Section */}
         <TouchableOpacity style={styles.settingsItem}>
           <Icon name="information-circle-outline" size={24} color="#000" />
-          <Text style={styles.settingsText}>About</Text>
+          <Text style={styles.settingsText}>Help</Text>
           <Icon name="chevron-forward-outline" size={24} color="#000" />
         </TouchableOpacity>
         

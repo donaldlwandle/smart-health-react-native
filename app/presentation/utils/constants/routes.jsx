@@ -14,3 +14,4 @@ export const VITALS = '/presentation/ui/pages/(standalone)/Vitals'
 export const TREATMENT = '/presentation/ui/pages/(standalone)/Treatment'
 export const HISTORY = '/presentation/ui/pages/(standalone)/MedicalHistory'
 export const TERMS = '/presentation/ui/pages/(standalone)/Terms'
+export const HELP_SCREEN = "../../ui/pages/(standalone)/HelpScreen"

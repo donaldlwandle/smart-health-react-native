@@ -45,7 +45,7 @@ const EmailVerification = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.cancelButton} onPress={handleVerifyCancel}>
-            <Text style={styles.buttonText1}>Cancel</Text>
+            <Text style={styles.buttonText1}>Sign In</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonContainer: {
-    backgroundColor: 'green',
+    backgroundColor: 'grey',
     padding: 15,
     borderRadius: 8,
     marginTop: 20,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   cancelButton: {
-    backgroundColor: 'red',
+    backgroundColor: 'green',
     padding: 15,
     borderRadius: 8,
     marginTop: 20,

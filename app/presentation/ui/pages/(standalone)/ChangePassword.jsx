@@ -36,33 +36,9 @@ const ChangePassword = () => {
         </TouchableOpacity>
       </View>
       
-      <Text style={styles.title}>Password and Security</Text>
-      <Text style={styles.subtitle}>Change Your Password</Text>
-      {dbError ? <Text style={styles.error}>{dbError}</Text> : null}
-      <TextInput
-        style={styles.input}
-        placeholder="Current Password"
-        placeholderTextColor="rgba(0, 0, 0, 0.7)" // Set placeholder color with opacity
-        secureTextEntry
-        value={currentPassword}
-        onChangeText={setCurrentPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="New Password"
-        placeholderTextColor="rgba(0, 0, 0, 0.7)" // Set placeholder color with opacity
-        secureTextEntry
-        value={newPassword}
-        onChangeText={setNewPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        placeholderTextColor="rgba(0, 0, 0, 0.7)" // Set placeholder color with opacity
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+      <Text style={styles.title}>Change Your Passowrd</Text>
+      <Text style={styles.subtitle}>A link will be sent to your email address to change your password</Text>
+      
       
       {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
 
@@ -95,20 +71,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 8,
     fontWeight: '600', 
+    opacity: 0.7,
     marginBottom: 20,
-  },
-  error: {
-    color: 'red',
-    marginBottom: 10,
-  },
-  input: {
-    height: 40,
-    width: 358,
-    borderColor: '1E1E1E',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 10,
   },
   button: {
     marginTop: 20,
