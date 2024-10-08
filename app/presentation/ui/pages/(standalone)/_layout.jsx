@@ -69,6 +69,11 @@ const StandaloneLayout = () => {
             options={screenOptions}
           />
 
+          <Stack.Screen
+            name='HelpScreen'
+            options={screenOptions}
+          />
+
           
   
           

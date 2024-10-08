@@ -187,7 +187,7 @@ export const getAllPatientMedicalRecords =async(patientID)=>{
         const q = query(collection(getFirestore(firebaseApp), "records"), where("patientID", "==", patientID));
         const querySnapshot = await getDocs(q);
 
-        const [recordsData] = await querySnapshot.docs.map((item)=>({
+        const recordsData = await querySnapshot.docs.map((item)=>({
             ...item.data(),
             docId:item.id
 

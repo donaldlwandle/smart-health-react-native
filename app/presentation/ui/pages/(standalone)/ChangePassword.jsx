@@ -1,6 +1,12 @@
 import React, { useState } from 'react'; 
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Ensure you install react-native-vector-icons
+import { useGlobalContext } from '../../../../../context/GlobalProvider';
+import { router } from 'expo-router';
+import { resetUserPassword } from '../../../../data/remote/firebase/firebase-querries';
+import { getAuth } from 'firebase/auth';
+import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
+
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -8,30 +14,51 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [dbError, setDbError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const{userData} = useGlobalContext();
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async() => {
     // Reset error messages
-    setDbError('');
-    setPasswordError('');
+    if(userData){
+      setIsLoading(true)
+      try{
+        await resetUserPassword(userData.userEmail)
+        .then(() => {
+          Alert.alert('Success', 'A password reset link has been sent to your email');
+          getAuth(firebaseApp).signOut(); ;
+        })
 
-    // Validate passwords
-    if (currentPassword === '' || newPassword === '' || confirmPassword === '') {
-      setDbError('All fields are required.');
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setPasswordError('New Password and Confirm Password must match.');
-      return;
-    }
+      }catch (err) {
+        setDbError(err.message); // Display validation error
+        console.log("RESET PASSWORD ERROR, CHANGE PWRD PAGE :" + error.message);
 
-    // password change logic 
+      }finally{
+        
+        setIsLoading(false)
+      }
+      
+      
+    }
   };
+
+  if (isLoading) 
+    return(
+      <View
+        style={{
+          alignItems:'center',
+          justifyContent: "center",
+          flex:1,
+        }}
+      >
+        <ActivityIndicator size="Large"/>
+      </View>
+  ) ;
 
   return (
     <View style={styles.container}>
     <SafeAreaView>
       <View style={styles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>{ router.back()}}>
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
       </View>
@@ -40,7 +67,7 @@ const ChangePassword = () => {
       <Text style={styles.subtitle}>A link will be sent to your email address to change your password</Text>
       
       
-      {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
+      {dbError ? <Text style={styles.errorText}>{dbError}</Text> : null}
 
       <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
         <Text style={styles.buttonText}>Change Password</Text>
@@ -88,6 +115,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600'
   },
+  errorText: {
+    color: 'red',
+    marginBottom: 16,
+    textAlign: 'center',
+  }
 });
 
 export default ChangePassword;

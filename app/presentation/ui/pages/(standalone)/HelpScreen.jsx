@@ -12,9 +12,31 @@ const HelpScreen = () => {
       </TouchableOpacity>
 
       <Text style={styles.header}>Help</Text>
+      <Text style={styles.subHeader}>CONTACT US.</Text>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>How can we help?</Text>
+
+        {/* Question 1 */}
+        <Text style={styles.question}>Reach out to us on the following platforms:</Text>
+        <Text style={styles.answer}>
+          Whatsapp: Send us a message,   +27 66 252 5896.
+        </Text>
+
+        <Text style={styles.answer}>
+          Call: Give us a call,   +27 66 252 5896.
+        </Text>
+        <Text style={styles.answer}>
+          Email: Or dend us an email,   helpdesk@smarthealth.com.
+        </Text>
+        
+
+      </View>
+
       <Text style={styles.subHeader}>Find your answers below.</Text>
 
       <View style={styles.section}>
+  
         <Text style={styles.sectionTitle}>1. Root User</Text>
 
         {/* Question 1 */}

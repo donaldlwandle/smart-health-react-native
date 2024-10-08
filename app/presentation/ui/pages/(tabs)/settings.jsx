@@ -3,7 +3,8 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
-
+import { router } from 'expo-router';
+import * as ROUTES from '../../../utils/constants/routes';
 export default function SettingsScreen({ navigation }) {
 
   const handleLogout = () => {
@@ -31,7 +32,7 @@ export default function SettingsScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.settingsCard}>
         {/* About Section */}
-        <TouchableOpacity style={styles.settingsItem}>
+        <TouchableOpacity style={styles.settingsItem} onPress={()=>{ router.push(ROUTES.HELP_SCREEN)}}>
           <Icon name="information-circle-outline" size={24} color="#000" />
           <Text style={styles.settingsText}>Help</Text>
           <Icon name="chevron-forward-outline" size={24} color="#000" />

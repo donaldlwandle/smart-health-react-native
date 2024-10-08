@@ -30,7 +30,7 @@ const PatientMedicalRecords = () => {
       try {
         const response = await getAllPatientMedicalRecords(selectedItem.birthID);
         if(response){
-          setPatientsRecords([response]);
+          setPatientsRecords(response);
         }else{
           setPatientsRecords([{
             date: '',
@@ -61,6 +61,7 @@ const PatientMedicalRecords = () => {
     
   }, [])
   
+  console.log("PATIENTS RECORDS, : " +patientsRecords)
 
   const [filter, setFilter] = useState('Recent');
   const [showPersonalDetails, setShowPersonalDetails] = useState(false);
