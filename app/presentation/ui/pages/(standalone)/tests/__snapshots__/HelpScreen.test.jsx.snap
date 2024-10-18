@@ -1,0 +1,322 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HelpScreen renders correctly 1`] = `
+<RCTScrollView
+  style={
+    {
+      "backgroundColor": "#FFF",
+      "flex": 1,
+      "padding": 20,
+    }
+  }
+>
+  <View>
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "opacity": 1,
+        }
+      }
+    >
+      <Text />
+    </View>
+    <Text
+      style={
+        {
+          "fontSize": 28,
+          "fontWeight": "bold",
+          "marginBottom": 10,
+          "textAlign": "left",
+        }
+      }
+    >
+      Help
+    </Text>
+    <Text
+      style={
+        {
+          "color": "#555",
+          "fontSize": 16,
+          "marginBottom": 20,
+        }
+      }
+    >
+      CONTACT US.
+    </Text>
+    <View
+      style={
+        {
+          "marginBottom": 20,
+        }
+      }
+    >
+      <Text
+        style={
+          {
+            "fontSize": 18,
+            "fontWeight": "bold",
+            "marginBottom": 10,
+          }
+        }
+      >
+        How can we help?
+      </Text>
+      <Text
+        style={
+          {
+            "fontSize": 16,
+            "fontWeight": "500",
+            "marginBottom": 5,
+          }
+        }
+      >
+        Reach out to us on the following platforms:
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        Whatsapp: Send us a message,   +27 66 252 5896.
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        Call: Give us a call,   +27 66 252 5896.
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        Email: Or dend us an email,   helpdesk@smarthealth.com.
+      </Text>
+    </View>
+    <Text
+      style={
+        {
+          "color": "#555",
+          "fontSize": 16,
+          "marginBottom": 20,
+        }
+      }
+    >
+      Find your answers below.
+    </Text>
+    <View
+      style={
+        {
+          "marginBottom": 20,
+        }
+      }
+    >
+      <Text
+        style={
+          {
+            "fontSize": 18,
+            "fontWeight": "bold",
+            "marginBottom": 10,
+          }
+        }
+      >
+        1. Root User
+      </Text>
+      <Text
+        style={
+          {
+            "fontSize": 16,
+            "fontWeight": "500",
+            "marginBottom": 5,
+          }
+        }
+      >
+        Q: How to give users such as admins and nurses access permissions?
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        A: On your home page, search for a user in the search input, click on the user box you will be directed to the user’s details.
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        Click on “edit” scroll to access and permissions section and give them access permissions depending on which user they are. e.g Admin or nurse.
+      </Text>
+      <Text
+        style={
+          {
+            "fontSize": 16,
+            "fontWeight": "500",
+            "marginBottom": 5,
+          }
+        }
+      >
+        Q: How to block a user?
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        A: On your home page, search for a user in the search input, click on the user box you will be directed to the user’s details.
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        Scroll down to the very top of the page where you give access and click on the red button titled “Block User”.
+      </Text>
+      <Text
+        style={
+          {
+            "fontSize": 18,
+            "fontWeight": "bold",
+            "marginBottom": 10,
+          }
+        }
+      >
+        2. Admins
+      </Text>
+      <Text
+        style={
+          {
+            "fontSize": 16,
+            "fontWeight": "500",
+            "marginBottom": 5,
+          }
+        }
+      >
+        Q: How to create a patient file?
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        A: Firstly ensure that the patient's file does not exist by searching with the patient's ID number.
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        if no results are return you can proceed with creating a patient's file by clicking on the "Create patient file" box and follow the prompts to create a patient file.
+      </Text>
+      <Text
+        style={
+          {
+            "fontSize": 18,
+            "fontWeight": "bold",
+            "marginBottom": 10,
+          }
+        }
+      >
+        3. Nurse
+      </Text>
+      <Text
+        style={
+          {
+            "fontSize": 16,
+            "fontWeight": "500",
+            "marginBottom": 5,
+          }
+        }
+      >
+        Q: How to create a patient medical record?
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        A: Firstly search for the patient using their ID number, the patient's profile should appear even if they donot have any medical records on the system,
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#333",
+            "fontSize": 14,
+            "marginBottom": 10,
+          }
+        }
+      >
+        Proceed to click on the result "Patient Profile" you will redirected to a page that shows a list of patient medical records. Below the menu with "Recent" and "Oldest" there is a button for creating a medical record, click on it and follow the prompts to successfully create a medical record.
+      </Text>
+    </View>
+  </View>
+</RCTScrollView>
+`;

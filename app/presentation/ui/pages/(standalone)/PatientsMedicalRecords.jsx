@@ -154,13 +154,7 @@ const PatientMedicalRecords = () => {
             <Text style={styles.detailsText}>Personal Details</Text>
             <Icon name="chevron-down" size={20} color="#000" />
           </TouchableOpacity>
-          <View style={styles.separator} />
-          <TouchableOpacity
-            onPress={() => toggleDetails('Medical')}
-            style={styles.detailsItem}>
-            <Text style={styles.detailsText}>Medical History</Text>
-            <Icon name="chevron-down" size={20} color="#000" />
-          </TouchableOpacity>
+          
           {/* Conditionally render details here based on state */}
           {showPersonalDetails && (
             <View>
@@ -179,11 +173,7 @@ const PatientMedicalRecords = () => {
 
             </View>
           )}
-          {showMedicalHistory && (
-            <Text style={styles.detailsContent}>
-              History of Hypertension...
-            </Text>
-          )}
+          
         </View>
 
         <View style={styles.filterMenu}>

@@ -1,28 +1,31 @@
 import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { Tabs, Redirect } from 'expo-router'
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const TabIcon =({icon,color, name ,focused})=>{
+const TabIcon =({icon ,focused})=>{
   return(
     <View>
-      <Image 
-        source ={icon}/>
+      <Icon name={icon} size={28} color={`${focused? "green":"black"}`} />
+      {/* <Icon name={"person"} size={24} color="black" />
+      <Icon name={"settings"} size={24} color="black" /> */}
+      
     </View>
   )
 }
 
 const TabsLayout = () => {
-  const screenOptions = {headerShown : false}
+  const screenOptions = {headerShown : false,tabBarShowLabel:false}
   return (
     <>
         <Tabs screenOptions={screenOptions}>
             <Tabs.Screen 
               name="home"
               options={{
-                title:"Home",
+                
                 headerShown: false,
                 tabBarIcon:({color,focused})=>(
-                  <TabIcon/>
+                  <TabIcon  icon={"home"} focused={focused}/>
 
                 )
               }}
@@ -31,10 +34,10 @@ const TabsLayout = () => {
             <Tabs.Screen 
               name="profile"
               options={{
-                title:"Profile",
+                
                 headerShown: false,
                 tabBarIcon:({color,focused})=>(
-                  <TabIcon/>
+                  <TabIcon icon={"person"} focused={focused}/>
 
                 )
               }}
@@ -43,10 +46,10 @@ const TabsLayout = () => {
             <Tabs.Screen 
               name="settings"
               options={{
-                title:"Settings",
+                
                 headerShown: false,
                 tabBarIcon:({color,focused})=>(
-                  <TabIcon/>
+                  <TabIcon icon={"settings"} focused={focused}/>
 
                 )
               }}

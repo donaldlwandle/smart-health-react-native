@@ -39,6 +39,7 @@ const HomeCreate = ({ patients, userData }) => {
           value={searchQuery}
           onChangeText={setSearchQuery}
           keyboardType="numeric"
+          
         />
       </View>
 
@@ -48,7 +49,7 @@ const HomeCreate = ({ patients, userData }) => {
 
       {/* Conditional rendering based on role and search results */}
       {userData.userRole === 3 ? (
-        <Text style={styles.title}>Create a patient file</Text>
+        <Text style={styles.title}>Manage patients files</Text>
       ) : (
         <View />
       )}

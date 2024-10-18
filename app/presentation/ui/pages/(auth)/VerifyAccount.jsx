@@ -8,6 +8,9 @@ import { getFirestore,setDoc,doc } from '@react-native-firebase/firestore';
 import { firebaseApp } from '../../../../data/remote/firebase/firebase-config';
 import { createNewUserAccount } from '../../../../data/remote/firebase/firebase-querries';
 import { Timestamp } from 'firebase/firestore';
+import { isNumeric } from '../../../utils/functions/functions';
+import validator from 'validator';
+
 const ValidateCode = (code) => {
   return code.trim().length > 0;
 };
@@ -43,12 +46,7 @@ export const VerifyAccount = () => {
     return emailRegex.test(email);
   };
 
-  function isNumeric(str) {
-    if (typeof str != "string") return false // we only process strings!  
-    return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-           !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
-  }
-
+  
   // Handle sign-up button press
   const handleSignUp = async (event) => {
     event.preventDefault();
@@ -113,6 +111,17 @@ export const VerifyAccount = () => {
       valid = false;
     } else if (password !== confirmPassword) {
       setPasswordError('Passwords do not match.');
+      valid = false;
+    }
+
+    if (validator.isStrongPassword(password, { 
+      minLength: 8, minLowercase: 1, 
+      minUppercase: 1, minNumbers: 1, minSymbols: 1 
+    })) { 
+      console.log('Is Strong Password') 
+    } else { 
+      
+      setPasswordError('Password not strong enough') 
       valid = false;
     }
 
@@ -246,13 +255,16 @@ export const VerifyAccount = () => {
 
 
           {/* Password Input */}
+          <Text style={styles.passwordInfo}>"Enter a strong password; min-characters: 8, min-lowercase: 1, 
+          min-uppercase: 1, min-numbers: 1, min-symbols: 1"</Text>
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Strong password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry={true}
             textContentType='password'
+            aria-label='Arial label'
           />
           {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
@@ -315,6 +327,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 24,
     textAlign: 'center',
+  },
+  passwordInfo:{
+    fontSize: 12,
+    marginBottom:10
+
   },
   input: {
     borderWidth: 1,

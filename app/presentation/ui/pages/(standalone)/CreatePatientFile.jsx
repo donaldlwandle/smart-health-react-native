@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { createNewPatientFile, getAllPatientsFiles } from '../../../../data/remote/firebase/firebase-querries';
 import { useGlobalContext } from '../../../../../context/GlobalProvider';
-import { getExistingPatient, patientExists } from '../../../utils/functions/functions';
+import { getExistingPatient, isNumeric, patientExists } from '../../../utils/functions/functions';
 import useFirebase from '../../../../domain/libs/fetchDataHook/useFirebase';
 import * as ROUTES from '../../../utils/constants/routes';
 import { Timestamp } from 'firebase/firestore';
@@ -16,7 +16,7 @@ const CreatePatientFile = ({ navigation }) => {
   const {data: patientsData} = useFirebase(getAllPatientsFiles);
   console.log("PATIENTS DATA, CREATE PATIENT PAGE :" + patientsData);
 
-  const{setSelectedItem} = useGlobalContext();
+  const{setSelectedItem,patients} = useGlobalContext();
 
   // Form state variables
   const [idNumber, setIdNumber] = useState('');
@@ -90,7 +90,7 @@ const CreatePatientFile = ({ navigation }) => {
     }
 
 
-    if (!insuranceNumber.trim() || isNaN(insuranceNumber)) {
+    if (!insuranceNumber.trim() || isNumeric(insuranceNumber)) {
       validationErrors.insuranceNumber = "Insurance number must be numeric.";
     }
 
@@ -150,8 +150,10 @@ const CreatePatientFile = ({ navigation }) => {
         await createNewPatientFile(newPatient)
         .then(()=>{
           console.log("New Patient File Created", newPatient);
-          Alert.alert("Successful! :Patient file created")
+          
           setSelectedItem(newPatient);
+          patients.push(newPatient);
+          Alert.alert("Successful! :Patient file created")
           router.push(ROUTES.PATIENT_DETAILS)
           
         })
@@ -231,6 +233,7 @@ const CreatePatientFile = ({ navigation }) => {
         placeholder="Date of Birth"
         value={dob}
         onChangeText={setDOB}
+       
       />
       {errors.dob && <Text style={styles.errorText}>{errors.dob}</Text>}
 
@@ -247,6 +250,7 @@ const CreatePatientFile = ({ navigation }) => {
         placeholder="Address"
         value={address}
         onChangeText={setAddress}
+        textContentType='fullStreetAddress'
       />
       {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
       
