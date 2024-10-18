@@ -62,6 +62,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FAFAFA',
     padding: 20,
+    marginTop: 20,
+    paddingTop: 20,
   },
   profileContainer: {
     alignItems: 'center',

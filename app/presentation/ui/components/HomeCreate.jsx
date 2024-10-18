@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, SafeAreaView, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ROUTES from '../../utils/constants/routes';
 import { router } from 'expo-router';
@@ -29,6 +29,7 @@ const HomeCreate = ({ patients, userData }) => {
   };
 
   return (
+    <SafeAreaview>
     <View style={styles.container}>
       {/* Search Input */}
       <View style={styles.searchContainer}>
@@ -83,6 +84,7 @@ const HomeCreate = ({ patients, userData }) => {
         )
       )}
     </View>
+    </SafeAreaview>
   );
 };
 
@@ -92,6 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#ffff',
+    paddingTop: 20,
   },
   searchContainer: {
     marginTop: 1,
@@ -109,9 +112,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   searchInput: {
-    flex: 1,
-    fontSize: 16,
-    borderColor: 'green',
+    height: 40,
+    borderColor: '#D3D3D3',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 10,
+    margin: 15,
+    backgroundColor: '#F5F5F5',
   },
   searchButton: {
     backgroundColor: 'green',
