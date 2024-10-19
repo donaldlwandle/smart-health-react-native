@@ -113,9 +113,6 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 40,
-    borderColor: '#D3D3D3',
-    borderWidth: 1,
-    borderRadius: 5,
     paddingLeft: 10,
     margin: 15,
     backgroundColor: '#F5F5F5',
