@@ -90,11 +90,11 @@ const HomeCreate = ({ patients, userData }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
+    marginTop: 10,
     flex: 1,
     padding: 20,
     backgroundColor: '#ffff',
-    paddingTop: 20,
+    paddingTop: 10,
   },
   searchContainer: {
     marginTop: 1,
