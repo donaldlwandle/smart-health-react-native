@@ -29,62 +29,62 @@ const HomeCreate = ({ patients, userData }) => {
   };
 
   return (
-    <SafeAreaview>
-    <View style={styles.container}>
-      {/* Search Input */}
-      <View style={styles.searchContainer}>
-        <Icon name="search" size={20} color="#aaa" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search with ID number"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          keyboardType="numeric"
-          
-        />
-      </View>
-
-      <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-        <Text style={styles.searchButtonText}>Search</Text>
-      </TouchableOpacity>
-
-      {/* Conditional rendering based on role and search results */}
-      {userData.userRole === 3 ? (
-        <Text style={styles.title}>Manage patients files</Text>
-      ) : (
-        <View />
-      )}
-
-      {/* Display search results or fallback message */}
-      {searchPerformed && !patientData ? (
-        <View>
-          <Text style={styles.noResultsText}>Sorry, no results found</Text>
+    <SafeAreaView>
+      <View style={styles.container}>
+        {/* Search Input */}
+        <View style={styles.searchContainer}>
+          <Icon name="search" size={20} color="#aaa" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search with ID number"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            keyboardType="numeric"
+            
+          />
         </View>
-      ) : null}
 
-      {patientData ? (
-        <View style={styles.resultContainer}>
-          <TouchableOpacity style={styles.placeholderBox} onPress={handleItemSelect}>
-            <Image
-              source={require('../../../../assets/Picture.png')}
-              style={styles.profileImage}
-            />
-            <Text style={styles.nameText}>{patientData.names} {patientData.surname}</Text>
-            <Text style={styles.idText}>{patientData.birthID}</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        searchPerformed && userData.userRole === 3 && (
+        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <Text style={styles.searchButtonText}>Search</Text>
+        </TouchableOpacity>
+
+        {/* Conditional rendering based on role and search results */}
+        {userData.userRole === 3 ? (
+          <Text style={styles.title}>Manage patients files</Text>
+        ) : (
+          <View />
+        )}
+
+        {/* Display search results or fallback message */}
+        {searchPerformed && !patientData ? (
+          <View>
+            <Text style={styles.noResultsText}>Sorry, no results found</Text>
+          </View>
+        ) : null}
+
+        {patientData ? (
           <View style={styles.resultContainer}>
-            <TouchableOpacity style={styles.placeholderBox} onPress={() => { router.push(ROUTES.CREATE_PATIENT); }}>
-              <Icon name="plus" size={50} color="#aaa" />
-              <Text style={styles.placeholderText}>Create new file</Text>
+            <TouchableOpacity style={styles.placeholderBox} onPress={handleItemSelect}>
+              <Image
+                source={require('../../../../assets/Picture.png')}
+                style={styles.profileImage}
+              />
+              <Text style={styles.nameText}>{patientData.names} {patientData.surname}</Text>
+              <Text style={styles.idText}>{patientData.birthID}</Text>
             </TouchableOpacity>
           </View>
-        )
-      )}
-    </View>
-    </SafeAreaview>
+        ) : (
+          searchPerformed && userData.userRole === 3 && (
+            <View style={styles.resultContainer}>
+              <TouchableOpacity style={styles.placeholderBox} onPress={() => { router.push(ROUTES.CREATE_PATIENT); }}>
+                <Icon name="plus" size={50} color="#aaa" />
+                <Text style={styles.placeholderText}>Create new file</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
