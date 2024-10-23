@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HelpScreen renders correctly 1`] = `
+exports[`<HomeScreen /> CustomText renders correctly 1`] = `
 <RCTScrollView
   style={
     {
@@ -44,6 +44,7 @@ exports[`HelpScreen renders correctly 1`] = `
           "opacity": 1,
         }
       }
+      testID="backButton"
     >
       <Text />
     </View>

@@ -24,7 +24,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     setPatients(patientsData);
-  }, [patientsData]);
+    setFilteredUsers(users)
+  }, [patientsData],[users]);
   
   console.log("USERS DATA, HOME/DASHBOARD :" + users);
   console.log("PATIENTS DATA, HOME/DASHBOARD :" + patientsData);
@@ -46,10 +47,13 @@ export default function Dashboard() {
 
   
 
-  const handleSearch = (text) => {
-    setSearchQuery(text);
-    const filtered = users.filter(user =>
-      user.userNames.toLowerCase().includes(text.toLowerCase()) 
+  
+
+  const handleSearch = () => {
+    
+    const filtered = filteredUsers.filter(user =>
+      user.userNames.toLowerCase().includes(searchQuery) ||
+      user.userWorkID.toLowerCase().includes(searchQuery)
     );
     setFilteredUsers(filtered);
   };
@@ -84,14 +88,20 @@ export default function Dashboard() {
         <Image source={require('../../../../../assets/logo.png')} style={styles.logo} />
       </View>
 
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search"
-        placeholderTextColor="#A9A9A9"
-        value={searchQuery}
-        onChangeText={handleSearch}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          
+          value={searchQuery}
+          
+          
+        />
+        <TouchableOpacity style={styles.searchIcon}>
+          <Icon name="search" size={20} color="#aaa" />
+        </TouchableOpacity>
+      </View>
 
-      />
 
     </View>
   );
@@ -115,7 +125,7 @@ export default function Dashboard() {
         
   
         <FlatList
-          data={users}
+          data={filteredUsers}
           renderItem={renderUserItem}
           keyExtractor={(item) => item.id}
           numColumns={3}
@@ -174,16 +184,30 @@ const styles = StyleSheet.create({
     height: 30,
     marginTop: 30,
   },
-
+  searchContainer: {
+    //display: 'flex',
+    marginTop: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 10,
+    borderColor: '#D3D3D3',
+    padding: 1,
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    elevation: 2,
+    //height: 40,
+  },
   searchInput: {
     marginTop: 1,
-    height: 40,
-    borderColor: '#D3D3D3',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 10,
-    margin: 15,
+    ///height: 40,
+    width: "80%",
     backgroundColor: '#F5F5F5',
+    padding: 5,
+    borderColor: 'none',
+  },
+  searchIcon: {
+    marginRight: 10,
   },
   usersList: {
     paddingHorizontal: 10,

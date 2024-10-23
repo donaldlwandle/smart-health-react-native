@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 const HelpScreen = () => {
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity onPress={()=>{ router.back()}}>
+      <TouchableOpacity testID='backButton' onPress={()=>{ router.back()}}>
         <Icon name="arrow-back" size={24} color="black" style={styles.backIcon} />
       </TouchableOpacity>
 
