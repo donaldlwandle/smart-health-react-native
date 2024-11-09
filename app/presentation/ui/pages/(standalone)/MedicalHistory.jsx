@@ -60,7 +60,7 @@ const MedicalHistory = () => {
             { cancelable: false }
           );
 
-          router.replace(ROUTES.HOME)
+          router.replace(ROUTES.PATIENT_FILE)
 
         })
       } catch (error) {

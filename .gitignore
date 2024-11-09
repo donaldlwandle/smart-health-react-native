@@ -33,3 +33,10 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# ignore cofigurations
+package.json
+
+#ignore firebase config
+google-services.json
+app/data/remote/firebase/firebase-config.jsx

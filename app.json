@@ -15,15 +15,15 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.falcon.smartHealth",
-      "googleServicesFile":"./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.falcon.smartHealth",
-      "googleServicesFile":"./google-services.json"
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,19 +31,23 @@
     "plugins": [
       "expo-router",
       [
-          "expo-build-properties",
-          {
-          "ios":{
-            "useFrameworks":"static"
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
           }
         }
       ],
       "@react-native-firebase/app",
       "@react-native-firebase/auth"
-
     ],
-    "experiments":{
-      "typedRoutes":true
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5334828b-9c4d-450c-8fbe-9e574073496a"
+      }
     }
   }
 }
