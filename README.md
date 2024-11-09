@@ -26,6 +26,7 @@ This application was bootstrapped with [Create Expo App](https://docs.expo.dev/m
 
 ## System Architecture:
 <img width="100%" align="left" src="https://drive.google.com/thumbnail?id=1XeOh0Bo5IEUhhBHAOXi_LE0CBT1Kh38m&sz=w1000"/>
+
 <br/>
 
 ## System Testing:
